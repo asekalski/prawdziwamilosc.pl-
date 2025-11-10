@@ -8,7 +8,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     
     <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -27,13 +27,12 @@
         }
         
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Space Grotesk', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             background-size: 400% 400%;
             animation: gradientFlow 15s ease infinite;
             color: #fff;
             overflow-x: hidden;
-            cursor: none;
         }
         
         #smooth-wrapper {
@@ -54,19 +53,33 @@
         
         /* Custom Cursor */
         .cursor {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.8);
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.9);
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.2s ease;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: all 0.15s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10001;
+            mix-blend-mode: difference;
+            transform: translate(-50%, -50%);
         }
         
         .cursor.active {
-            transform: scale(2);
-            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%) scale(1.8);
+            background: rgba(255, 255, 255, 0.15);
         }
         
         /* Navigation */
@@ -84,9 +97,9 @@
         }
         
         .logo {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Sora', sans-serif;
             font-size: 28px;
-            font-weight: 900;
+            font-weight: 800;
             letter-spacing: -1px;
         }
         
@@ -155,9 +168,9 @@
         }
         
         .hero-content h1 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Sora', sans-serif;
             font-size: clamp(48px, 8vw, 120px);
-            font-weight: 900;
+            font-weight: 800;
             line-height: 1.1;
             margin-bottom: 30px;
             letter-spacing: -3px;
@@ -179,9 +192,9 @@
         }
         
         .section-title {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Sora', sans-serif;
             font-size: clamp(36px, 5vw, 72px);
-            font-weight: 900;
+            font-weight: 800;
             margin-bottom: 80px;
             text-align: center;
             letter-spacing: -2px;
@@ -213,7 +226,7 @@
         }
         
         .feature-card h3 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Sora', sans-serif;
             font-size: 28px;
             margin-bottom: 15px;
             font-weight: 700;
@@ -239,9 +252,9 @@
         }
         
         .stat-item h2 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Sora', sans-serif;
             font-size: clamp(48px, 6vw, 72px);
-            font-weight: 900;
+            font-weight: 800;
             margin-bottom: 10px;
         }
         
@@ -257,9 +270,9 @@
         }
         
         .cta-section h2 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Sora', sans-serif;
             font-size: clamp(36px, 5vw, 64px);
-            font-weight: 900;
+            font-weight: 800;
             margin-bottom: 30px;
             letter-spacing: -2px;
         }
@@ -312,11 +325,16 @@
             .features, .stats, .cta-section {
                 padding: 80px 30px;
             }
+            
+            .cursor, .cursor-dot {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
     <div class="cursor"></div>
+    <div class="cursor-dot"></div>
     
     <div id="smooth-wrapper">
         <div id="smooth-content">
@@ -414,22 +432,51 @@
     <script>
         gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
         
-        // Smooth Scrolling with GSAP ScrollSmoother
+        // Smooth Scrolling with GSAP ScrollSmoother - Enhanced easing
         let smoother = ScrollSmoother.create({
             wrapper: '#smooth-wrapper',
             content: '#smooth-content',
-            smooth: 2,
+            smooth: 1.5,
             effects: true,
             smoothTouch: 0.1,
-            normalizeScroll: true
+            normalizeScroll: true,
+            ignoreMobileResize: true,
+            ease: 'power3.inOut'
         });
         
-        // Custom cursor
+        // Custom cursor - improved tracking
         const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+        
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
+        let dotX = 0;
+        let dotY = 0;
+        
         document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+            mouseX = e.clientX;
+            mouseY = e.clientY;
         });
+        
+        // Smooth cursor animation
+        function animateCursor() {
+            // Outer circle with delay
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            
+            // Inner dot - faster
+            dotX += (mouseX - dotX) * 0.25;
+            dotY += (mouseY - dotY) * 0.25;
+            cursorDot.style.left = dotX + 'px';
+            cursorDot.style.top = dotY + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
         
         document.querySelectorAll('a, .btn').forEach(elem => {
             elem.addEventListener('mouseenter', () => cursor.classList.add('active'));
