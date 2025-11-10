@@ -9,342 +9,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
-    
     <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
     <!-- Lenis Smooth Scroll -->
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html.lenis {
-            height: auto;
-        }
-        
-        .lenis.lenis-smooth {
-            scroll-behavior: auto;
-        }
-        
-        .lenis.lenis-smooth [data-lenis-prevent] {
-            overscroll-behavior: contain;
-        }
-        
-        .lenis.lenis-stopped {
-            overflow: hidden;
-        }
-        
-        .lenis.lenis-scrolling iframe {
-            pointer-events: none;
-        }
-        
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            background-size: 400% 400%;
-            animation: gradientFlow 15s ease infinite;
-            color: #fff;
-            overflow-x: hidden;
-        }
-        
-        @keyframes gradientFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        /* Custom Cursor */
-        .cursor {
-            width: 30px;
-            height: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 10000;
-            mix-blend-mode: difference;
-            transition: all 0.15s ease;
-            transform: translate(-50%, -50%);
-        }
-        
-        .cursor-dot {
-            width: 6px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 10001;
-            mix-blend-mode: difference;
-            transform: translate(-50%, -50%);
-        }
-        
-        .cursor.active {
-            transform: translate(-50%, -50%) scale(1.8);
-            background: rgba(255, 255, 255, 0.15);
-        }
-        
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 30px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-        }
-        
-        .logo {
-            font-family: 'Sora', sans-serif;
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -1px;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-        }
-        
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.3s;
-        }
-        
-        .nav-links a:hover {
-            opacity: 0.7;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .btn {
-            padding: 12px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-        
-        .btn-primary {
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .btn-primary:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background: #fff;
-            color: #667eea;
-            border: 2px solid #fff;
-        }
-        
-        .btn-secondary:hover {
-            background: transparent;
-            color: #fff;
-            transform: translateY(-2px);
-        }
-        
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 0 20px;
-        }
-        
-        .hero-content h1 {
-            font-family: 'Sora', sans-serif;
-            font-size: clamp(48px, 8vw, 120px);
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 30px;
-            letter-spacing: -3px;
-        }
-        
-        .hero-content p {
-            font-size: clamp(18px, 2vw, 24px);
-            max-width: 700px;
-            margin: 0 auto 40px;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-        
-        /* Features Section */
-        .features {
-            padding: 120px 60px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .section-title {
-            font-family: 'Sora', sans-serif;
-            font-size: clamp(36px, 5vw, 72px);
-            font-weight: 800;
-            margin-bottom: 80px;
-            text-align: center;
-            letter-spacing: -2px;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-        }
-        
-        .feature-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 50px 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.15);
-        }
-        
-        .feature-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-        
-        .feature-card h3 {
-            font-family: 'Sora', sans-serif;
-            font-size: 28px;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-        
-        .feature-card p {
-            opacity: 0.8;
-            line-height: 1.6;
-        }
-        
-        /* Stats Section */
-        .stats {
-            padding: 120px 60px;
-            text-align: center;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 60px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        
-        .stat-item h2 {
-            font-family: 'Sora', sans-serif;
-            font-size: clamp(48px, 6vw, 72px);
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-        
-        .stat-item p {
-            font-size: 18px;
-            opacity: 0.8;
-        }
-        
-        /* CTA Section */
-        .cta-section {
-            padding: 120px 60px;
-            text-align: center;
-        }
-        
-        .cta-section h2 {
-            font-family: 'Sora', sans-serif;
-            font-size: clamp(36px, 5vw, 64px);
-            font-weight: 800;
-            margin-bottom: 30px;
-            letter-spacing: -2px;
-        }
-        
-        .cta-section p {
-            font-size: 20px;
-            margin-bottom: 40px;
-            opacity: 0.9;
-        }
-        
-        /* Footer */
-        footer {
-            padding: 60px;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-        }
-        
-        footer p {
-            opacity: 0.7;
-        }
-        
-        /* Scroll Indicator */
-        .scroll-indicator {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 14px;
-            opacity: 0.7;
-            animation: bounce 2s infinite;
-            z-index: 100;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-            40% { transform: translateX(-50%) translateY(-10px); }
-            60% { transform: translateX(-50%) translateY(-5px); }
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            nav {
-                padding: 20px 30px;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .features, .stats, .cta-section {
-                padding: 80px 30px;
-            }
-            
-            .cursor, .cursor-dot {
-                display: none;
-            }
-        }
+    <style>* {margin:0;padding:0;box-sizing:border-box;}html.lenis{height:auto;} .lenis.lenis-smooth{scroll-behavior:auto;}.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain;}.lenis.lenis-stopped{overflow:hidden;}.lenis.lenis-scrolling iframe{pointer-events:none;}body{font-family:'Space Grotesk',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%);background-size:400% 400%;animation:gradientFlow 15s ease infinite;color:#fff;overflow-x:hidden;}@keyframes gradientFlow{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}.cursor{width:30px;height:30px;border:2px solid rgba(255,255,255,0.9);border-radius:50%;position:fixed;pointer-events:none;z-index:10000;mix-blend-mode:difference;transition:all 0.15s ease;transform:translate(-50%,-50%);}.cursor-dot{width:6px;height:6px;background:rgba(255,255,255,0.9);border-radius:50%;position:fixed;pointer-events:none;z-index:10001;mix-blend-mode:difference;transform:translate(-50%,-50%);}.cursor.active{transform:translate(-50%,-50%) scale(1.8);background:rgba(255,255,255,0.15);}nav{position:fixed;top:0;width:100%;padding:30px 60px;display:flex;justify-content:space-between;align-items:center;z-index:1000;background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);}.logo{font-family:'Sora',sans-serif;font-size:28px;font-weight:800;letter-spacing:-1px;}.nav-links{display:flex;gap:40px;list-style:none;}.nav-links a{color:#fff;text-decoration:none;font-weight:500;transition:opacity 0.3s;}.nav-links a:hover{opacity:0.7;}.cta-buttons{display:flex;gap:15px;}.btn{padding:12px 30px;border-radius:50px;text-decoration:none;font-weight:600;transition:all 0.3s ease;display:inline-block;}.btn-primary{background:rgba(255,255,255,0.2);color:#fff;border:2px solid rgba(255,255,255,0.3);}.btn-primary:hover{background:rgba(255,255,255,0.3);transform:translateY(-2px);}.btn-secondary{background:#fff;color:#667eea;border:2px solid #fff;}.btn-secondary:hover{background:transparent;color:#fff;transform:translateY(-2px);}.hero{height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 20px;flex-direction:column;}.hero-content h1{font-family:'Sora',sans-serif;font-size:clamp(48px,8vw,120px);font-weight:800;line-height:1.1;margin-bottom:30px;letter-spacing:-3px;}.hero-content p{font-size:clamp(18px,2vw,24px);max-width:700px;margin:0 auto 40px;opacity:0.9;line-height:1.6;}.heart-canvas-wrapper{margin:30px auto;width:100%;max-width:440px;}.heart-canvas{width:100%;height:320px;display:block;}.features{padding:120px 60px;max-width:1400px;margin:0 auto;}.section-title{font-family:'Sora',sans-serif;font-size:clamp(36px,5vw,72px);font-weight:800;margin-bottom:80px;text-align:center;letter-spacing:-2px;}.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:40px;}.feature-card{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);padding:50px 40px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);transition:all 0.3s ease;}.feature-card:hover{transform:translateY(-10px);background:rgba(255,255,255,0.15);}.feature-icon{font-size:48px;margin-bottom:20px;}.feature-card h3{font-family:'Sora',sans-serif;font-size:28px;margin-bottom:15px;font-weight:700;}.feature-card p{opacity:0.8;line-height:1.6;}.stats{padding:120px 60px;text-align:center;}.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:60px;max-width:1000px;margin:0 auto;}.stat-item h2{font-family:'Sora',sans-serif;font-size:clamp(48px,6vw,72px);font-weight:800;margin-bottom:10px;}.stat-item p{font-size:18px;opacity:0.8;}.cta-section{padding:120px 60px;text-align:center;}.cta-section h2{font-family:'Sora',sans-serif;font-size:clamp(36px,5vw,64px);font-weight:800;margin-bottom:30px;letter-spacing:-2px;}.cta-section p{font-size:20px;margin-bottom:40px;opacity:0.9;}footer{padding:60px;text-align:center;background:rgba(0,0,0,0.2);backdrop-filter:blur(10px);}footer p{opacity:0.7;}.scroll-indicator{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);font-size:14px;opacity:0.7;animation:bounce 2s infinite;z-index:100;}@keyframes bounce{0%,20%,50%,80%,100%{transform:translateX(-50%) translateY(0);}40%{transform:translateX(-50%) translateY(-10px);}60%{transform:translateX(-50%) translateY(-5px);}@media (max-width:768px){nav{padding:20px 30px;}.nav-links{display:none;}.features,.stats,.cta-section{padding:80px 30px;}.cursor,.cursor-dot{display:none;}.heart-canvas-wrapper{max-width:99vw;}.heart-canvas{height:140px;}}
     </style>
 </head>
 <body>
     <div class="cursor"></div>
     <div class="cursor-dot"></div>
-    
     <nav>
         <div class="logo">Prawdziwa Miłość</div>
         <ul class="nav-links">
@@ -357,7 +32,6 @@
             <a href="#" class="btn btn-secondary">Zarejestruj się</a>
         </div>
     </nav>
-    
     <section class="hero">
         <div class="hero-content">
             <h1>Znajdź swoją<br>prawdziwą miłość</h1>
@@ -366,9 +40,11 @@
                 <a href="#" class="btn btn-secondary">Rozpocznij za darmo</a>
             </div>
         </div>
+        <div class="heart-canvas-wrapper">
+            <canvas id="serce" class="heart-canvas" width="420" height="320"></canvas>
+        </div>
         <div class="scroll-indicator">Scroll ↓</div>
     </section>
-    
     <section class="features" id="funkcje">
         <h2 class="section-title">Dlaczego my?</h2>
         <div class="features-grid">
@@ -404,7 +80,6 @@
             </div>
         </div>
     </section>
-    
     <section class="stats">
         <div class="stats-grid">
             <div class="stat-item">
@@ -421,7 +96,6 @@
             </div>
         </div>
     </section>
-    
     <section class="cta-section">
         <h2>Gotowy na prawdziwą miłość?</h2>
         <p>Dołącz do tysięcy osób, które znalazły swoją drugą połówkę</p>
@@ -429,160 +103,18 @@
             <a href="#" class="btn btn-secondary">Zarejestruj się teraz</a>
         </div>
     </section>
-    
     <footer>
         <p>&copy; 2025 Prawdziwa Miłość. Wszystkie prawa zastrzeżone.</p>
     </footer>
-    
-    <script>
-        // Initialize Lenis smooth scroll
-        const lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            direction: 'vertical',
-            gestureDirection: 'vertical',
-            smooth: true,
-            mouseMultiplier: 1,
-            smoothTouch: false,
-            touchMultiplier: 2,
-            infinite: false,
-        });
-        
-        // Animation loop for Lenis
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-        
-        // Integrate Lenis with GSAP ScrollTrigger
-        gsap.registerPlugin(ScrollTrigger);
-        
-        lenis.on('scroll', ScrollTrigger.update);
-        
-        gsap.ticker.add((time)=>{
-            lenis.raf(time * 1000);
-        });
-        
-        gsap.ticker.lagSmoothing(0);
-        
-        // Custom cursor - improved tracking
-        const cursor = document.querySelector('.cursor');
-        const cursorDot = document.querySelector('.cursor-dot');
-        
-        let mouseX = 0;
-        let mouseY = 0;
-        let cursorX = 0;
-        let cursorY = 0;
-        let dotX = 0;
-        let dotY = 0;
-        
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-        
-        // Smooth cursor animation
-        function animateCursor() {
-            // Outer circle with delay
-            cursorX += (mouseX - cursorX) * 0.15;
-            cursorY += (mouseY - cursorY) * 0.15;
-            cursor.style.left = cursorX + 'px';
-            cursor.style.top = cursorY + 'px';
-            
-            // Inner dot - faster
-            dotX += (mouseX - dotX) * 0.25;
-            dotY += (mouseY - dotY) * 0.25;
-            cursorDot.style.left = dotX + 'px';
-            cursorDot.style.top = dotY + 'px';
-            
-            requestAnimationFrame(animateCursor);
-        }
-        animateCursor();
-        
-        document.querySelectorAll('a, .btn').forEach(elem => {
-            elem.addEventListener('mouseenter', () => cursor.classList.add('active'));
-            elem.addEventListener('mouseleave', () => cursor.classList.remove('active'));
-        });
-        
-        // Hero animation
-        gsap.from('.hero-content h1', {
-            opacity: 0,
-            y: 100,
-            duration: 1.2,
-            ease: 'power4.out'
-        });
-        
-        gsap.from('.hero-content p', {
-            opacity: 0,
-            y: 50,
-            duration: 1,
-            delay: 0.3,
-            ease: 'power3.out'
-        });
-        
-        gsap.from('.hero-content .cta-buttons', {
-            opacity: 0,
-            y: 30,
-            duration: 1,
-            delay: 0.6,
-            ease: 'power3.out'
-        });
-        
-        // Features animation
-        gsap.from('.feature-card', {
-            scrollTrigger: {
-                trigger: '.features',
-                start: 'top 80%'
-            },
-            opacity: 0,
-            y: 100,
-            stagger: 0.2,
-            duration: 0.8,
-            ease: 'power3.out'
-        });
-        
-        // Stats animation
-        gsap.from('.stat-item', {
-            scrollTrigger: {
-                trigger: '.stats',
-                start: 'top 80%'
-            },
-            opacity: 0,
-            scale: 0.5,
-            stagger: 0.2,
-            duration: 0.8,
-            ease: 'back.out(1.7)'
-        });
-        
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    lenis.scrollTo(target, {
-                        offset: -100,
-                        duration: 1.5
-                    });
-                }
-            });
-        });
-        
-        // Hide scroll indicator on scroll
-        ScrollTrigger.create({
-            trigger: '.hero',
-            start: 'top top',
-            end: 'bottom top',
-            onUpdate: (self) => {
-                const indicator = document.querySelector('.scroll-indicator');
-                if (self.progress > 0.1) {
-                    gsap.to(indicator, { opacity: 0, duration: 0.3 });
-                } else {
-                    gsap.to(indicator, { opacity: 0.7, duration: 0.3 });
-                }
-            }
-        });
-    </script>
+    <script>// Initialize Lenis smooth scroll
+const lenis=new Lenis({duration:1.2,easing:(t)=>Math.min(1,1.001-Math.pow(2,-10*t)),direction:'vertical',gestureDirection:'vertical',smooth:true,mouseMultiplier:1,smoothTouch:false,touchMultiplier:2,infinite:false,});function raf(time){lenis.raf(time);requestAnimationFrame(raf);}requestAnimationFrame(raf);gsap.registerPlugin(ScrollTrigger);lenis.on('scroll',ScrollTrigger.update);gsap.ticker.add((time)=>{lenis.raf(time*1000);});gsap.ticker.lagSmoothing(0);// Custom cursor - improved tracking
+const cursor=document.querySelector('.cursor');const cursorDot=document.querySelector('.cursor-dot');let mouseX=0;let mouseY=0;let cursorX=0;let cursorY=0;let dotX=0;let dotY=0;document.addEventListener('mousemove',(e)=>{mouseX=e.clientX;mouseY=e.clientY;});function animateCursor(){cursorX+=(mouseX-cursorX)*0.15;cursorY+=(mouseY-cursorY)*0.15;cursor.style.left=cursorX+'px';cursor.style.top=cursorY+'px';dotX+=(mouseX-dotX)*0.25;dotY+=(mouseY-dotY)*0.25;cursorDot.style.left=dotX+'px';cursorDot.style.top=dotY+'px';requestAnimationFrame(animateCursor);}animateCursor();document.querySelectorAll('a, .btn').forEach(elem=>{elem.addEventListener('mouseenter',()=>cursor.classList.add('active'));elem.addEventListener('mouseleave',()=>cursor.classList.remove('active'));});// Hero animation
+gsap.from('.hero-content h1',{opacity:0,y:100,duration:1.2,ease:'power4.out'});gsap.from('.hero-content p',{opacity:0,y:50,duration:1,delay:0.3,ease:'power3.out'});gsap.from('.hero-content .cta-buttons',{opacity:0,y:30,duration:1,delay:0.6,ease:'power3.out'});// Features animation
+gsap.from('.feature-card',{scrollTrigger:{trigger:'.features',start:'top 80%'},opacity:0,y:100,stagger:0.2,duration:0.8,ease:'power3.out'});// Stats animation
+gsap.from('.stat-item',{scrollTrigger:{trigger:'.stats',start:'top 80%'},opacity:0,scale:0.5,stagger:0.2,duration:0.8,ease:'back.out(1.7)'});// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor=>{anchor.addEventListener('click',function(e){e.preventDefault();const target=document.querySelector(this.getAttribute('href'));if(target){lenis.scrollTo(target,{offset:-100,duration:1.5});}});});// Hide scroll indicator on scroll
+ScrollTrigger.create({trigger:'.hero',start:'top top',end:'bottom top',onUpdate:(self)=>{const indicator=document.querySelector('.scroll-indicator');if(self.progress>0.1){gsap.to(indicator,{opacity:0,duration:0.3});}else{gsap.to(indicator,{opacity:0.7,duration:0.3});}}});
+// --- HEART CANVAS ANIMATION ---
+(function(){const canvas=document.getElementById('serce');if(!canvas)return;const ctx=canvas.getContext('2d');function drawHeart(ctx,t,w,h){const x=w/2+160*Math.pow(Math.sin(t),3);const y=h/2-130*Math.cos(t)+50*Math.cos(2*t)+20*Math.cos(3*t)+10*Math.cos(4*t);return{x,y};}function render(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.save();const scale=1+0.04*Math.sin(Date.now()*0.004);ctx.translate(canvas.width/2,canvas.height/2);ctx.scale(scale,scale);ctx.translate(-canvas.width/2,-canvas.height/2);ctx.strokeStyle='#ff2981';ctx.lineWidth=6;ctx.shadowColor='#fff4';ctx.shadowBlur=22;ctx.beginPath();for(let t=0;t<=2*Math.PI;t+=0.02){const p=drawHeart(ctx,t,canvas.width,canvas.height);if(t===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);}ctx.closePath();ctx.stroke();ctx.restore();requestAnimationFrame(render);}render();})();</script>
 </body>
 </html>
