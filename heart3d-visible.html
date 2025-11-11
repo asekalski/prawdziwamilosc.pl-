@@ -1,0 +1,62 @@
+<!-- SERCHE 3D START -->
+<script src="https://unpkg.com/three@0.151.3/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.151.3/examples/js/loaders/GLTFLoader.min.js"></script>
+<style>
+.heart-3d-fixed {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  z-index: 2147483646;
+  width: 340px;
+  height: 340px;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+@media (max-width:600px) {
+  .heart-3d-fixed { width: 98vw; height: 170px; left: 50%; top: 40px; transform: translateX(-50%); }
+}
+</style>
+<div class="heart-3d-fixed" id="heart3d-fixed"></div>
+<script>
+if(document.getElementById('heart3d-fixed')) {
+  const container = document.getElementById('heart3d-fixed');
+  let scene, camera, renderer, heart;
+  const width = container.offsetWidth || 340, height = container.offsetHeight || 340;
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(40, width/height, 0.1, 1000);
+  camera.position.set(0,0,3);
+  renderer = new THREE.WebGLRenderer({alpha:true,antialias:true});
+  renderer.setClearColor(0x000000, 0);
+  renderer.setSize(width, height);
+  container.appendChild(renderer.domElement);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  scene.add(new THREE.DirectionalLight(0xbc6ff1, 1).position.set(2,2,3));
+  const loader = new THREE.GLTFLoader();
+  loader.load('heart_compressed.glb', function(gltf) {
+    heart = gltf.scene;
+    scene.add(heart);
+    animate();
+  }, undefined, function(e){console.error(e)});
+  function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene,camera);
+  }
+  function updateHeartScroll(){
+    if(!heart) return;
+    const st = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const scrollP = docHeight ? st/docHeight : 0;
+    heart.rotation.y = scrollP * 2.4;
+    let scl = 1.1 + scrollP*1.1;
+    heart.scale.set(scl,scl,scl);
+  }
+  window.addEventListener('scroll', updateHeartScroll);
+  window.addEventListener('resize',()=>{
+    const w = container.offsetWidth||340, h = container.offsetHeight||340;
+    renderer.setSize(w,h);
+    camera.aspect = w/h;
+    camera.updateProjectionMatrix();
+  });
+}
+</script>
+<!-- SERCHE 3D END -->
