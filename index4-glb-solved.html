@@ -701,7 +701,7 @@
         <div class="news-grid">
             <div class="news-item">
                 <h3>Nowe Funkcje Społeczności</h3>
-                <p>Wprowadziliśmy nowe narzędzia do tworzenia grup zainteresowań. Połącz się z ludźmi, którzy podzielają Twoje pasje.</p>
+                <p>Wprowadziliśmy nowe nowe narzędzia do tworzenia grup zainteresowań. Połącz się z ludźmi, którzy podzielają Twoje pasje.</p>
             </div>
             <div class="news-item">
                 <h3>Kampania Bezpieczeństwa</h3>
@@ -732,14 +732,20 @@
 
         let scene, camera, renderer, heartModel, scrollRotation = 0;
         let glbArrayBuffer = null;
-        const glbUrl = 'https://raw.githubusercontent.com/asekalski/prawdziwamilosc.pl-/main/heart_compressed.glb';
+        // FIXED: Use relative path instead of raw.githubusercontent.com
+        const glbUrl = './heart_compressed.glb';
 
         console.log('🚀 Starting application...');
         console.log('→ Loading GLB from:', glbUrl);
 
         // Load GLB immediately
         fetch(glbUrl)
-            .then(r => r.arrayBuffer())
+            .then(r => {
+                if (!r.ok) {
+                    throw new Error(`HTTP error! status: ${r.status}`);
+                }
+                return r.arrayBuffer();
+            })
             .then(ab => {
                 glbArrayBuffer = ab;
                 console.log('✓ GLB loaded:', (ab.byteLength / 1024 / 1024).toFixed(2), 'MB');
