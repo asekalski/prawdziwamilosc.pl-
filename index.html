@@ -831,18 +831,22 @@ body {
     <!-- Three.js Heart Animation Script -->
     <script>
     (function() {
+        console.log('🔄 Inicjalizacja Three.js Heart Animation...');
+        
         // Sprawdź czy biblioteki zostały załadowane
         if (typeof THREE === 'undefined') {
-            console.error('Three.js nie został załadowany!');
+            console.error('❌ Three.js nie został załadowany!');
             return;
         }
+        console.log('✅ Three.js załadowany');
 
         // Konfiguracja sceny
         const container = document.getElementById('heart-canvas-container');
         if (!container) {
-            console.error('Kontener heart-canvas-container nie został znaleziony!');
+            console.error('❌ Kontener heart-canvas-container nie został znaleziony!');
             return;
         }
+        console.log('✅ Kontener znaleziony');
 
         // Tworzenie sceny, kamery i renderera
         const scene = new THREE.Scene();
@@ -861,6 +865,7 @@ body {
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         container.appendChild(renderer.domElement);
+        console.log('✅ Renderer utworzony i dodany do DOM');
 
         // Oświetlenie
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -873,6 +878,7 @@ body {
         const pointLight = new THREE.PointLight(0xff0055, 1, 100);
         pointLight.position.set(0, 0, 3);
         scene.add(pointLight);
+        console.log('✅ Oświetlenie dodane');
 
         // Zmienne dla modelu i animacji
         let heartModel = null;
@@ -882,13 +888,17 @@ body {
         // Początkowe wartości transformacji
         const initialScale = 0.8;
         const maxScale = 1.5;
-        const rotationSpeed = 0.002;
 
-        // Ładowanie modelu GLB
+        // Ładowanie modelu GLB - POPRAWIONA ŚCIEŻKA
         const loader = new THREE.GLTFLoader();
+        const modelPath = './heart_compressed.glb';
+        
+        console.log('🔄 Próba załadowania modelu z:', modelPath);
+        
         loader.load(
-            'heart_compressed.glb',
+            modelPath,
             function(gltf) {
+                console.log('✅ Model GLB załadowany pomyślnie!');
                 heartModel = gltf.scene;
                 
                 heartModel.scale.set(initialScale, initialScale, initialScale);
@@ -898,21 +908,27 @@ body {
                 heartModel.position.sub(center);
                 
                 scene.add(heartModel);
+                console.log('✅ Model dodany do sceny');
                 
                 if (gltf.animations && gltf.animations.length > 0) {
                     mixer = new THREE.AnimationMixer(heartModel);
                     gltf.animations.forEach((clip) => {
                         mixer.clipAction(clip).play();
                     });
+                    console.log('✅ Animacje modelu uruchomione');
                 }
-                
-                console.log('Model serca załadowany pomyślnie!');
             },
             function(xhr) {
-                console.log((xhr.loaded / xhr.total * 100) + '% załadowane');
+                const percent = (xhr.loaded / xhr.total * 100).toFixed(0);
+                console.log('⏳ Ładowanie heart_compressed.glb: ' + percent + '%');
             },
             function(error) {
-                console.error('Błąd podczas ładowania modelu:', error);
+                console.error('❌ BŁĄD podczas ładowania modelu z:', modelPath);
+                console.error('Szczegóły błędu:', error);
+                console.log('💡 Sprawdź:');
+                console.log('   1. Czy plik heart_compressed.glb znajduje się w katalogu głównym');
+                console.log('   2. Czy nazwa pliku jest poprawna (wielkość liter ma znaczenie)');
+                console.log('   3. Czy strona działa przez HTTPS lub localhost (wymagane dla CORS)');
             }
         );
 
@@ -962,8 +978,9 @@ body {
         });
 
         animate();
+        console.log('✅ Pętla animacji uruchomiona');
 
     })();
     </script>
 </body>
-</html>
+</html
