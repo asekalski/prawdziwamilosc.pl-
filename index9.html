@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prawdziwa Miłość - Portal Autentycznych Relacji</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        :root {
+            --color-primary: hsl(260, 45%, 55%);
+            --color-secondary: hsl(240, 50%, 65%);
+            --color-dark: #0a0a1a;
+            --color-darker: #050510;
+            --color-light: #f5f5ff;
+            --color-accent: #ff6b9d;
+            --color-accent-light: rgba(255, 107, 157, 0.1);
+            --color-text: #e0e0ff;
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--color-darker) 0%, #1a1a3e 50%, var(--color-dark) 100%);
+            color: var(--color-text);
+            overflow-x: hidden;
+            line-height: 1.6;
+            letter-spacing: 0.3px;
+        }
+        .orb-container { flex: 1; display: flex; justify-content: center; align-items: center; z-index: 2; height: 500px; position: relative; }
+        #heart-3d { width: 400px; height: 400px; margin: 0 auto; display: flex; align-items: center; justify-content: center; background: none; }
+        /* reszta CSS pozostaje taka sama jak w index.html */
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="logo">❤️ Prawdziwa Miłość</div>
+        <ul class="nav-menu">
+            <li><a href="#o-nas">O nas</a></li>
+            <li><a href="#wartości">Wartości</a></li>
+            <li><a href="#opinie">Opinie</a></li>
+            <li><a href="#zespół">Zespół</a></li>
+            <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+        <button class="menu-toggle">☰</button>
+    </nav>
+    <div class="scroll-indicator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+    </div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-gradient"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Dołącz do społeczności opartej na autentyczności</h1>
+            <p class="hero-subtitle">Stworzyliśmy prawdziwamilosc.pl, by każdy mógł poczuć autentyczne zaufanie i zbudować relację opartą na empatii, szczerości i rozwoju.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary">Dołącz teraz</button>
+                <button class="btn btn-secondary">Dowiedz się więcej</button>
+            </div>
+        </div>
+        <div class="orb-container">
+            <div id="heart-3d"></div>
+        </div>
+    </section>
+    <!-- reszta sekcji index.html bez zmian (O nas, opinie, zespół, news, footer) -->
+    <!-- ... -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+    <script>
+    // --- 3D Heart od index7.html ---
+    let scene, camera, renderer, heartModel;
+    let scrollRotation = 0;
+    const glbUrl = './heart_compressed.glb';
+    function waitForGLTFLoader() {
+        return new Promise(resolve => {
+            if (
+                typeof THREE !== 'undefined' &&
+                typeof THREE.GLTFLoader !== 'undefined' &&
+                typeof THREE.DRACOLoader !== 'undefined') {
+                    resolve();
+            } else setTimeout(() => waitForGLTFLoader().then(resolve), 50);
+        });
+    }
+    Promise.all([
+        fetch(glbUrl).then(r => r.arrayBuffer()),
+        waitForGLTFLoader()
+    ]).then(([ab]) => { initThreeJS(ab); });
+    function initThreeJS(glbArrayBuffer) {
+        const container = document.getElementById('heart-3d');
+        const width = container.clientWidth || 400;
+        const height = container.clientHeight || 400;
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
+        camera.position.z = 3;
+        renderer = new THREE.WebGLRenderer({antialias:true,alpha:true});
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+        scene.add(new THREE.AmbientLight(0xffffff,1.4));
+        const pt = new THREE.PointLight(0xbc6ff1,2,50); pt.position.set(10,20,6); scene.add(pt);
+        const dracoLoader = new THREE.DRACOLoader();
+        dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
+        const loader = new THREE.GLTFLoader();
+        loader.setDRACOLoader(dracoLoader);
+        loader.parse(glbArrayBuffer,'',gltf => {
+            heartModel = gltf.scene;
+            const box = new THREE.Box3().setFromObject(heartModel);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+            heartModel.position.sub(center);
+            heartModel.scale.multiplyScalar(2.8/Math.max(size.x,size.y,size.z));
+            scene.add(heartModel);
+            animate();
+        },()=>fallback());
+        window.addEventListener('resize',()=>{
+            const w=container.clientWidth||400,h=container.clientHeight||400;
+            camera.aspect=w/h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w,h);
+        });
+        window.addEventListener('scroll',()=>{
+            const scrollPercent=window.pageYOffset/(document.documentElement.scrollHeight-window.innerHeight);
+            scrollRotation=scrollPercent*Math.PI*8;
+        });
+    }
+    function fallback(){
+        const geometry=new THREE.IcosahedronGeometry(1,8);
+        const material=new THREE.MeshPhongMaterial({color:0xbc6ff1,emissive:0x5025ec,emissiveIntensity:0.6});
+        heartModel=new THREE.Mesh(geometry,material);
+        heartModel.scale.set(2,2,2);
+        scene.add(heartModel);
+        animate();
+    }
+    function animate(){
+        requestAnimationFrame(animate);
+        if(!heartModel||!renderer)return;
+        heartModel.rotation.y=scrollRotation;
+        renderer.render(scene,camera);
+    }
+    </script>
+    <!-- pozostałe skrypty index.html (GSAP, obsługa menu, itd.) mogą być bez zmian -->
+</body>
+</html>
