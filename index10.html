@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prawdziwa Miłość - Portal Autentycznych Relacji</title>
+    <style>
+        /* --- STYLES ORYGINALNE z index.html --- */
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        :root { /* ...pozostałe zmienne... */ }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #050510 0%, #1a1a3e 50%, #0a0a1a 100%);
+            color: #e0e0ff;
+            overflow-x: hidden;
+            line-height: 1.6;
+            letter-spacing: 0.3px;
+        }
+        /* sticky heart overlay */
+        #heart-sticky {
+            position: fixed;
+            left: 0; top: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #heart-3d-canvas {
+            width: 600px; height: 600px;
+            max-width: 95vw; max-height: 95vh;
+            display: block;
+            opacity: 0.78;
+            filter: drop-shadow(0 0 80px #bc6ff188);
+        }
+        /* ...tu reszta css oryginalnego index.html... */
+    </style>
+</head>
+<body>
+    <!-- ...oryginalny kod index.html bez zmian tutaj... -->
+    <div id="heart-sticky"><!-- tutaj pojawi się 3D serce --></div>
+    <!-- ...oryginalny kod index.html dalej... -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+    <script>
+    // ------- SMOOTH 3D SCROLL HEART -------
+    let scene, camera, renderer, heartModel;
+    let targetRotation = 0;
+    let displayedRotation = 0;
+    const glbUrl = './heart_compressed.glb';
+    function waitForGLTFLoader() {
+        return new Promise(resolve => {
+            if (typeof THREE !== 'undefined' && typeof THREE.GLTFLoader !== 'undefined' && typeof THREE.DRACOLoader !== 'undefined') {
+                resolve();
+            } else setTimeout(() => waitForGLTFLoader().then(resolve), 50);
+        });
+    }
+    Promise.all([
+        fetch(glbUrl).then(r => r.arrayBuffer()),
+        waitForGLTFLoader()
+    ]).then(([ab]) => {
+        const container = document.getElementById('heart-sticky');
+        // czyść przed dodaniem
+        container.innerHTML = '';
+        const canvas = document.createElement('canvas');
+        canvas.id = 'heart-3d-canvas';
+        container.appendChild(canvas);
+        // Three.js setup
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+        camera.position.z = 3.1;
+        renderer = new THREE.WebGLRenderer({canvas, antialias:true,alpha:true});
+        renderer.setClearColor(0x000000,0);
+        renderer.setSize(600, 600);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        scene.add(new THREE.AmbientLight(0xffffff,1.4));
+        const pt = new THREE.PointLight(0xbc6ff1,2,50); pt.position.set(10,20,6); scene.add(pt);
+        // DRACO loader
+        const dracoLoader = new THREE.DRACOLoader();
+        dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
+        const loader = new THREE.GLTFLoader();
+        loader.setDRACOLoader(dracoLoader);
+        loader.parse(ab,'',gltf => {
+            heartModel = gltf.scene;
+            const box = new THREE.Box3().setFromObject(heartModel);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+            heartModel.position.sub(center);
+            heartModel.scale.multiplyScalar(3.8/Math.max(size.x,size.y,size.z));
+            scene.add(heartModel);
+            animate();
+        },()=>{});
+        window.addEventListener('resize',()=>{
+            renderer.setSize(600,600);
+            camera.aspect = 1;
+            camera.updateProjectionMatrix();
+        });
+        window.addEventListener('scroll',()=>{
+            const scrollPercent = window.pageYOffset/(document.documentElement.scrollHeight-window.innerHeight);
+            targetRotation=scrollPercent*Math.PI*10;
+        });
+    });
+    function animate(){
+        requestAnimationFrame(animate);
+        if(!heartModel||!renderer)return;
+        // easing do smooth rotacji:
+        displayedRotation += (targetRotation-displayedRotation)*0.09;
+        heartModel.rotation.y=displayedRotation;
+        // delikatne pulsowanie serca (opcjonalnie)
+        const base = 1.18+Math.sin(Date.now()*0.002)*0.09;
+        heartModel.scale.set(base,base,base);
+        renderer.render(scene,camera);
+    }
+    </script>
+    <!-- ...pozostałe skrypty index.html bez ruszania... -->
+</body>
+</html>
