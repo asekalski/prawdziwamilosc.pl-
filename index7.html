@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serce 3D na fioletowym tle - scroll obraca</title>
+  <style>
+    html,body{height:100%;margin:0;padding:0;box-sizing:border-box;}
+    body{min-height:100vh;background:linear-gradient(135deg,#6226a7,#5025ec,#bc6ff1);display:flex;align-items:center;justify-content:center;overflow-x:hidden;}
+    #heart-container{width:600px;height:600px;max-width:90vw;max-height:80vh;margin:auto;display:flex;justify-content:center;align-items:center;background:none;border-radius:30px;}
+  </style>
+</head>
+<body>
+<div id="heart-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+<script>
+  let scene, camera, renderer, heartModel;
+  let scrollRotation = 0;
+  const glbUrl = './heart_compressed.glb';
+
+  // Loader wait
+  function waitForGLTFLoader() {
+    return new Promise(resolve => {
+      if (typeof THREE !== 'undefined' && typeof THREE.GLTFLoader !== 'undefined' && typeof THREE.DRACOLoader !== 'undefined') {
+        resolve();
+      } else setTimeout(() => waitForGLTFLoader().then(resolve), 50);
+    });
+  }
+
+  Promise.all([
+    fetch(glbUrl).then(r => r.arrayBuffer()),
+    waitForGLTFLoader()
+  ]).then(([ab]) => {
+    initThreeJS(ab);
+  });
+
+  function initThreeJS(glbArrayBuffer) {
+    const container = document.getElementById('heart-container');
+    const width = container.clientWidth, height = container.clientHeight;
+    scene = new THREE.Scene();
+    scene.background = null;
+    camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
+    camera.position.z = 3;
+    renderer = new THREE.WebGLRenderer({antialias:true,alpha:true});
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+
+    // Light
+    scene.add(new THREE.AmbientLight(0xffffff,1.4));
+    const point = new THREE.PointLight(0xbc6ff1,2,50);
+    point.position.set(10,20,6);
+    scene.add(point);
+
+    if (typeof THREE.GLTFLoader !== 'undefined') {
+      const dracoLoader = new THREE.DRACOLoader();
+      dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
+      const loader = new THREE.GLTFLoader();
+      loader.setDRACOLoader(dracoLoader);
+      loader.parse(glbArrayBuffer,'',gltf => {
+        heartModel = gltf.scene;
+        const box = new THREE.Box3().setFromObject(heartModel);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        heartModel.position.sub(center);
+        heartModel.scale.multiplyScalar(2.8/Math.max(size.x,size.y,size.z));
+        scene.add(heartModel);
+        animate();
+      },error => {
+        fallback();
+      });
+    } else {
+      fallback();
+    }
+
+    window.addEventListener('resize',()=>{
+      const w=container.clientWidth,h=container.clientHeight;
+      camera.aspect = w/h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w,h);
+    });
+    window.addEventListener('scroll',()=>{
+      const scrollPercent = window.pageYOffset / (document.documentElement.scrollHeight-window.innerHeight);
+      scrollRotation=scrollPercent*Math.PI*8;
+    });
+  }
+
+  function fallback(){
+    const geometry=new THREE.IcosahedronGeometry(1,8);
+    const material=new THREE.MeshPhongMaterial({color:0xbc6ff1,emissive:0x5025ec,emissiveIntensity:0.6});
+    heartModel=new THREE.Mesh(geometry,material);
+    heartModel.scale.set(2,2,2);
+    scene.add(heartModel);
+    animate();
+  }
+
+  function animate(){
+    requestAnimationFrame(animate);
+    if(!heartModel||!renderer)return;
+    heartModel.rotation.y=scrollRotation;
+    heartModel.rotation.x=Math.sin(Date.now()*0.0007)*0.2;
+    renderer.render(scene,camera);
+  }
+</script>
+</body>
+</html>
