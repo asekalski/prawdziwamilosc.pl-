@@ -1,66 +1,71 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>prawdziwamilosc.pl - Poznaj miłość, która naprawdę jest prawdziwa</title>
-    <meta name="description" content="Portal randkowy oparty na autentyczności, zaufaniu i prawdziwej miłości. Dołącz do społeczności, która wierzy w szczere relacje.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>/* ...pozostaw style z oryginału... */</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>prawdziwamilosc.pl - Poznaj miłość, która naprawdę jest prawdziwa</title>
+<meta name="description" content="Portal randkowy oparty na autentyczności, zaufaniu i prawdziwej miłości. Dołącz do społeczności, która wierzy w szczere relacje.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body {background: #181827; color:#fff; font-family:'Inter',sans-serif; margin: 0;}
+.heart-3d-fixed {position: fixed; top: 100px; left: 50%; z-index: 999; width: 340px; height: 340px; pointer-events: none; transform: translateX(-50%);}
+@media (max-width:600px) {.heart-3d-fixed { width: 98vw; height: 170px; left: 50%; top: 40px; transform: translateX(-50%);} }
+</style>
 </head>
 <body>
-    <!-- Navigation, Hero, Content itd. z oryginału... -->
-    <div class="heart-3d-fixed" id="heart3d-fixed"></div>
-
-    <script src="https://unpkg.com/three@0.151.3/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.151.3/examples/js/loaders/GLTFLoader.min.js"></script>
-    <script>
-    if(document.getElementById('heart3d-fixed')) {
-      const container = document.getElementById('heart3d-fixed');
-      let scene, camera, renderer, heartLoaded = false, heart;
-      const width = container.offsetWidth || 340, height = container.offsetHeight || 340;
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(40, width/height, 0.1, 1000);
-      camera.position.set(0,0,3);
-      renderer = new THREE.WebGLRenderer({alpha:true,antialias:true});
-      renderer.setClearColor(0x000000, 0);
-      renderer.setSize(width, height);
-      container.appendChild(renderer.domElement);
-      scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-      scene.add(new THREE.DirectionalLight(0xbc6ff1, 1).position.set(2,2,3));
-      const loader = new THREE.GLTFLoader();
-      loader.load('heart_compressed.glb', function(gltf) {
-        heart = gltf.scene;
-        heartLoaded = true;
-        scene.add(heart);
-        animate();
-      }, undefined, function(e){
-        alert('Błąd ładowania modelu serca! Szczegóły w konsoli.');
-        console.error('GLTFLoader error:', e);
-      });
-      function animate() {
-        requestAnimationFrame(animate);
-        renderer.render(scene,camera);
-      }
-      function updateHeartScroll(){
-        if(!heartLoaded) return;
-        const st = window.scrollY;
-        const docHeight = document.body.scrollHeight - window.innerHeight;
-        const scrollP = docHeight ? st/docHeight : 0;
-        heart.rotation.y = scrollP * 2.4;
-        let scl = 1.1 + scrollP*1.1;
-        heart.scale.set(scl,scl,scl);
-      }
-      window.addEventListener('scroll', updateHeartScroll);
-      window.addEventListener('resize',()=>{
-        const w = container.offsetWidth||340, h = container.offsetHeight||340;
-        renderer.setSize(w,h);
-        camera.aspect = w/h;
-        camera.updateProjectionMatrix();
-      });
-    }
-    </script>
+<div class="heart-3d-fixed" id="heart3d-fixed"></div>
+<script src="https://unpkg.com/three@0.151.3/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.151.3/examples/js/loaders/GLTFLoader.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const container = document.getElementById('heart3d-fixed');
+  let scene, camera, renderer, heart;
+  let loaded = false;
+  if(!container) return;
+  // Setup renderer
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(40, container.offsetWidth/container.offsetHeight, 0.1, 1000);
+  camera.position.set(0,0,3);
+  renderer = new THREE.WebGLRenderer({alpha:true,antialias:true});
+  renderer.setClearColor(0x000000, 0);
+  renderer.setSize(container.offsetWidth, container.offsetHeight);
+  container.appendChild(renderer.domElement);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  scene.add(new THREE.DirectionalLight(0xbc6ff1, 1).position.set(1,2,3));
+  // Load model
+  const loader = new THREE.GLTFLoader();
+  loader.load('heart_compressed.glb', function(gltf) {
+    heart = gltf.scene;
+    scene.add(heart);
+    loaded = true;
+    animate();
+  }, undefined, function(error) {
+    alert('Błąd ładowania modelu "heart_compressed.glb": '+(error ? error.message : 'Nieznany błąd'));
+    console.error('GLB Load error', error);
+  });
+  function animate() {
+    renderer.render(scene,camera);
+    requestAnimationFrame(animate);
+  }
+  function updateHeartScroll() {
+    if(!loaded||!heart) return;
+    const st = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const scrollP = docHeight ? st/docHeight : 0;
+    // Rotation and scale
+    heart.rotation.y = scrollP * 2.4;
+    const scl = 1.0 + scrollP * 1.2;
+    heart.scale.set(scl,scl,scl);
+  }
+  window.addEventListener('scroll', updateHeartScroll);
+  window.addEventListener('resize',()=>{
+    renderer.setSize(container.offsetWidth,container.offsetHeight);
+    camera.aspect = container.offsetWidth/container.offsetHeight;
+    camera.updateProjectionMatrix();
+  });
+});
+</script>
 </body>
 </html>
