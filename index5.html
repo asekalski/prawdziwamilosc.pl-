@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prawdziwa Miłość - Portal Autentycznych Relacji</title>
+    
+    <style>
+        /* Tutaj wklej cały CSS jak w poprzednim pliku */
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="logo">❤️ Prawdziwa Miłość</div>
+        <ul class="nav-menu">
+            <li><a href="#o-nas">O nas</a></li>
+            <li><a href="#wartości">Wartości</a></li>
+            <li><a href="#opinie">Opinie</a></li>
+            <li><a href="#zespół">Zespół</a></li>
+            <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+        <button class="menu-toggle">☰</button>
+    </nav>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-gradient"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Dołącz do społeczności opartej na autentyczności</h1>
+            <p class="hero-subtitle">Stworzyliśmy prawdziwamilosc.pl, by każdy mógł poczuć autentyczne zaufanie i zbudować relację opartą na empatii, szczerości i rozwoju.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary">Dołącz teraz</button>
+                <button class="btn btn-secondary">Dowiedz się więcej</button>
+            </div>
+        </div>
+        <div class="orb-container">
+            <div id="heart-container">
+                <canvas id="heart-canvas"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- O nas Section -->
+    <section id="o-nas">
+        <div class="section-header">
+            <h2>Nasza Misja</h2>
+            <p>W świecie pełnym powierzchowności, stworzyliśmy przestrzeń dla prawdziwych połączeń</p>
+        </div>
+        
+        <div class="categories">
+            <div class="category-card">
+                <h3>💬 Szczerość</h3>
+                <p>Szczere rozmowy to podstawa dobrych relacji. Wspieramy otwartość i prawdziwość w każdej interakcji.</p>
+            </div>
+            <div class="category-card">
+                <h3>🤝 Zaufanie</h3>
+                <p>Buduj relację na zaufaniu, otwartości i szacunku. To fundament, który przetrwa próbę czasu.</p>
+            </div>
+            <div class="category-card">
+                <h3>🌱 Wspólny Rozwój</h3>
+                <p>Wspólne pasje, rozwijanie się razem, wsparcie w drodze. Razem jesteście silniejsi.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stories Section -->
+    <section class="stories-section" id="opinie">
+        <div class="section-header">
+            <h2>Prawdziwe Historii</h2>
+            <p>Ludzie, którzy znaleźli miłość na naszym portalu</p>
+        </div>
+
+        <div class="stories-slider">
+            <div class="story-card">
+                <p class="story-text">Znaleźliśmy siebie tutaj – autentyczność się opłaca! Nigdy nie wierzyliśmy, że można znaleźć prawdziwą miłość online.</p>
+                <p class="story-author">— Anna & Tomasz</p>
+            </div>
+            <div class="story-card">
+                <p class="story-text">To miejsce to prawdziwa społeczność zakorzeniona w empatii. Czuliśmy się bezpiecznie od pierwszej rozmowy.</p>
+                <p class="story-author">— Magda & Krzysztof</p>
+            </div>
+            <div class="story-card">
+                <p class="story-text">Dzięki portalowi odkryliśmy prawdziwą miłość. Dziś planujemy wspólną przyszłość i nie mogliśmy być szczęśliwsi.</p>
+                <p class="story-author">— Karolina & Jakub</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="zespół">
+        <div class="section-header">
+            <h2>Nasz Zespół</h2>
+            <p>Pasjonaci, którzy codziennie pracują nad tym, by Wasze relacje były autentyczne</p>
+        </div>
+
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="team-avatar">👩</div>
+                <h3>Justyna</h3>
+                <p>Założycielka</p>
+            </div>
+            <div class="team-member">
+                <div class="team-avatar">👨‍💻</div>
+                <h3>Piotr</h3>
+                <p>Wsparcie IT</p>
+            </div>
+            <div class="team-member">
+                <div class="team-avatar">👥</div>
+                <h3>Aleksandra</h3>
+                <p>Obsługa społeczności</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section id="kontakt">
+        <div class="section-header">
+            <h2>Najnowsze Wiadomości</h2>
+            <p>Bądź na bieżąco z tym co dzieje się na portalu</p>
+        </div>
+
+        <div class="news-grid">
+            <div class="news-item">
+                <h3>Nowe Funkcje Społeczności</h3>
+                <p>Wprowadziliśmy nowe narzędzia do tworzenia grup zainteresowań. Połącz się z ludźmi, którzy podzielają Twoje pasje.</p>
+            </div>
+            <div class="news-item">
+                <h3>Kampania Bezpieczeństwa</h3>
+                <p>Wzmacniamy systemy bezpieczeństwa. Twoja prywatność i bezpieczeństwo to nasza priorytet.</p>
+            </div>
+            <div class="news-item">
+                <h3>Sukces Społeczności</h3>
+                <p>Dziesiątki par znalazły miłość na naszym portalu. Dziękujemy za zaufanie i wsparcie!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Prawdziwa Miłość. Wszystkie prawa zastrzeżone.</p>
+        <p>Budowanie autentycznych relacji opartych na empatii i szczerości.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        let scene, camera, renderer, heartModel, scrollRotation = 0;
+        let glbArrayBuffer = null;
+        const glbUrl = './heart_compressed.glb';
+
+        console.log('🚀 Starting application...');
+        console.log('→ Loading GLB from:', glbUrl);
+
+        // Wait for GLTFLoader to be available
+        function waitForLoader() {
+            return new Promise((resolve) => {
+                if (typeof THREE !== 'undefined' && typeof THREE.GLTFLoader !== 'undefined') {
+                    console.log('✓ GLTFLoader ready!');
+                    resolve();
+                } else {
+                    setTimeout(() => waitForLoader().then(resolve), 50);
+                }
+            });
+        }
+
+        // Load GLB immediately
+        Promise.all([
+            fetch(glbUrl)
+                .then(r => {
+                    if (!r.ok) throw new Error(`HTTP error! status: ${r.status}`);
+                    return r.arrayBuffer();
+                })
+                .then(ab => {
+                    glbArrayBuffer = ab;
+                    console.log('✓ GLB loaded:', (ab.byteLength / 1024 / 1024).toFixed(2), 'MB');
+                }),
+            waitForLoader()
+        ])
+        .then(() => initThreeJS())
+        .catch(e => {
+            console.error('✗ Failed to load GLB:', e);
+            setTimeout(initThreeJS, 100);
+        });
+
+        function initThreeJS() {
+            const container = document.getElementById('heart-container');
+            if (!container) return;
+
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            console.log('→ Init Three.js:', width, 'x', height);
+
+            try {
+                scene = new THREE.Scene();
+                scene.background = null;
+
+                camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+                camera.position.z = 3;
+
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setSize(width, height);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                container.appendChild(renderer.domElement);
+
+                // Lights
+                const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+                scene.add(ambientLight);
+
+                const pointLight1 = new THREE.PointLight(0xff1493, 2, 100);
+                pointLight1.position.set(10, 10, 10);
+                scene.add(pointLight1);
+
+                const pointLight2 = new THREE.PointLight(0x00ccff, 1.5, 100);
+                pointLight2.position.set(-10, -10, 10);
+                scene.add(pointLight2);
+
+                console.log('✓ Three.js ready');
+
+                // Try to load GLB
+                if (glbArrayBuffer && typeof THREE.GLTFLoader !== 'undefined') {
+                    console.log('✓ GLTFLoader available, parsing GLB...');
+                    const loader = new THREE.GLTFLoader();
+                    loader.parse(
+                        glbArrayBuffer,
+                        '',
+                        (gltf) => {
+                            console.log('✓ GLB parsed successfully!');
+                            heartModel = gltf.scene;
+                            setupModel();
+                            animate();
+                        },
+                        (error) => {
+                            console.error('✗ Parse error:', error);
+                            createFallback();
+                        }
+                    );
+                } else {
+                    console.warn('⚠ GLTFLoader not ready or no GLB buffer');
+                    createFallback();
+                }
+
+                window.addEventListener('resize', onWindowResize);
+
+            } catch (error) {
+                console.error('✗ Three.js init error:', error);
+                createFallback();
+            }
+        }
+
+        function setupModel() {
+            if (!heartModel) return;
+            console.log('→ Setting up model...');
+
+            const box = new THREE.Box3().setFromObject(heartModel);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+
+            heartModel.position.sub(center);
+            const scale = 3 / Math.max(size.x, size.y, size.z);
+            heartModel.scale.multiplyScalar(scale);
+
+            heartModel.traverse((child) => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                    if (child.material) {
+                        child.material.emissiveIntensity = 0.5;
+                        child.material.side = THREE.DoubleSide;
+                    }
+                }
+            });
+
+            scene.add(heartModel);
+            console.log('✓ Model ready!');
+        }
+
+        function createFallback() {
+            console.log('→ Using fallback geometry...');
+            const geometry = new THREE.IcosahedronGeometry(1, 8);
+            const material = new THREE.MeshPhongMaterial({
+                color: 0xff1493,
+                emissive: 0xff69b4,
+                emissiveIntensity: 0.5,
+                shininess: 150,
+                side: THREE.DoubleSide
+            });
+            heartModel = new THREE.Mesh(geometry, material);
+            heartModel.scale.set(2, 2, 2);
+            scene.add(heartModel);
+            console.log('✓ Fallback ready');
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (!heartModel || !renderer) return;
+
+            const pulse = 1 + Math.sin(Date.now() * 0.003) * 0.15;
+            heartModel.scale.set(pulse * 2, pulse * 2, pulse * 2);
+            heartModel.rotation.y = scrollRotation;
+            heartModel.rotation.x = Math.sin(Date.now() * 0.0005) * 0.3;
+            heartModel.rotation.z += 0.001;
+
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            if (!renderer) return;
+            const container = document.getElementById('heart-container');
+            if (!container) return;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+
+        window.addEventListener('scroll', () => {
+            const scrollPercent = window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight);
+            scrollRotation = scrollPercent * Math.PI * 8;
+        });
+
+        // ============ GSAP ANIMATIONS ============
+
+        const nav = document.querySelector('.nav');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 100) {
+                scrollIndicator.classList.add('hidden');
+            } else {
+                scrollIndicator.classList.remove('hidden');
+            }
+        });
+
+        gsap.timeline()
+            .to('.hero-title', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.3 })
+            .to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.7')
+            .to('.hero-buttons', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.7');
+
+        gsap.to('.orb-container', {
+            scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1 },
+            y: 200, scale: 0.8, opacity: 0
+        });
+
+        gsap.utils.toArray('.section-header').forEach(header => {
+            gsap.to(header, {
+                scrollTrigger: { trigger: header, start: 'top 80%', end: 'top 50%' },
+                opacity: 1, y: 0, duration: 1, ease: 'power3.out'
+            });
+        });
+
+        const categoryCards = gsap.utils.toArray('.category-card');
+        categoryCards.forEach((card, i) => {
+            gsap.to(card, {
+                scrollTrigger: { trigger: card, start: 'top 85%', end: 'top 60%' },
+                opacity: 1, y: 0, duration: 0.8, delay: i * 0.2, ease: 'power3.out'
+            });
+        });
+
+        const storyCards = gsap.utils.toArray('.story-card');
+        storyCards.forEach((card, i) => {
+            gsap.to(card, {
+                scrollTrigger: { trigger: card, start: 'top 85%', end: 'top 60%' },
+                opacity: 1, y: 0, duration: 0.8, delay: i * 0.15, ease: 'power3.out'
+            });
+        });
+
+        if (window.innerWidth > 768) {
+            const slider = document.querySelector('.stories-slider');
+            let isDown = false, startX, scrollLeft;
+            slider.addEventListener('mousedown', (e) => {
+                isDown = true;
+                slider.style.cursor = 'grabbing';
+                startX = e.pageX - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            });
+            slider.addEventListener('mouseleave', () => { isDown = false; slider.style.cursor = 'grab'; });
+            slider.addEventListener('mouseup', () => { isDown = false; slider.style.cursor = 'grab'; });
+            slider.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                const x = e.pageX - slider.offsetLeft;
+                slider.scrollLeft = scrollLeft - (x - startX) * 2;
+            });
+            slider.style.cursor = 'grab';
+        }
+
+        const teamMembers = gsap.utils.toArray('.team-member');
+        teamMembers.forEach((member, i) => {
+            gsap.to(member, {
+                scrollTrigger: { trigger: member, start: 'top 85%', end: 'top 60%' },
+                opacity: 1, y: 0, duration: 0.8, delay: i * 0.15, ease: 'power3.out'
+            });
+        });
+
+        const newsItems = gsap.utils.toArray('.news-item');
+        newsItems.forEach((item, i) => {
+            gsap.to(item, {
+                scrollTrigger: { trigger: item, start: 'top 85%', end: 'top 60%' },
+                opacity: 1, y: 0, duration: 0.8, delay: i * 0.1, ease: 'power3.out'
+            });
+        });
+
+        if (window.innerWidth > 768) {
+            const cursor = document.createElement('div');
+            cursor.style.cssText = `position:fixed;width:20px;height:20px;border-radius:50%;background:rgba(188,111,241,0.5);pointer-events:none;z-index:10000;mix-blend-mode:screen;display:none;`;
+            document.body.appendChild(cursor);
+            const cursorGlow = document.createElement('div');
+            cursorGlow.style.cssText = `position:fixed;width:40px;height:40px;border-radius:50%;border:1px solid rgba(188,111,241,0.3);pointer-events:none;z-index:9999;display:none;`;
+            document.body.appendChild(cursorGlow);
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.display = 'block';
+                cursorGlow.style.display = 'block';
+                gsap.to(cursor, { x: e.clientX - 10, y: e.clientY - 10, duration: 0.1 });
+                gsap.to(cursorGlow, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.2 });
+            });
+            document.querySelectorAll('a, button, .category-card, .story-card, .news-item').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    gsap.to(cursor, { scale: 1.5, duration: 0.3 });
+                    gsap.to(cursorGlow, { scale: 1.5, duration: 0.3 });
+                });
+                el.addEventListener('mouseleave', () => {
+                    gsap.to(cursor, { scale: 1, duration: 0.3 });
+                    gsap.to(cursorGlow, { scale: 1, duration: 0.3 });
+                });
+            });
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+            });
+        });
+
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        menuToggle.addEventListener('click', () => {
+            if (navMenu.style.display === 'flex') {
+                navMenu.style.display = 'none';
+            } else {
+                navMenu.style.display = 'flex';
+                navMenu.style.flexDirection = 'column';
+                navMenu.style.position = 'absolute';
+                navMenu.style.top = '100%';
+                navMenu.style.right = '0';
+                navMenu.style.background = 'rgba(26, 26, 46, 0.98)';
+                navMenu.style.padding = '24px';
+                navMenu.style.borderRadius = '0 0 0 16px';
+                navMenu.style.minWidth = '200px';
+            }
+        });
+
+        const cards = document.querySelectorAll('.category-card, .story-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const rotateX = (y - rect.height / 2) / 20;
+                const rotateY = (rect.width / 2 - x) / 20;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+
+        const heroGradient = document.querySelector('.hero-gradient');
+        let angle = 135;
+        function animateGradient() {
+            angle += 0.5;
+            if (angle >= 360) angle = 0;
+            const x = 50 + Math.cos(angle * Math.PI / 180) * 20;
+            const y = 50 + Math.sin(angle * Math.PI / 180) * 20;
+            heroGradient.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(127, 83, 172, 0.3) 0%, rgba(100, 125, 238, 0.2) 35%, transparent 70%)`;
+            requestAnimationFrame(animateGradient);
+        }
+        animateGradient();
+
+        window.addEventListener('scroll', () => {
+            const pct = window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight);
+            document.documentElement.style.setProperty('--color-primary', `hsl(${260 + pct * 40}, 45%, 55%)`);
+        });
+    </script>
+</body>
+</html>
