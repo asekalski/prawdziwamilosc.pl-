@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prawdziwa Miłość - Portal Autentycznych Relacji</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: hsl(260, 45%, 55%);
+            --color-secondary: hsl(240, 50%, 65%);
+            --color-dark: #0a0a1a;
+            --color-darker: #050510;
+            --color-light: #f5f5ff;
+            --color-accent: #ff6b9d;
+            --color-accent-light: rgba(255, 107, 157, 0.1);
+            --color-text: #e0e0ff;
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--color-darker) 0%, #1a1a3e 50%, var(--color-dark) 100%);
+            color: var(--color-text);
+            overflow-x: hidden;
+            line-height: 1.6;
+            letter-spacing: 0.3px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .nav.scrolled {
+            background: rgba(10, 10, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(188, 111, 241, 0.1);
+            padding: 15px 40px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #bc6ff1 0%, #6485ee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: var(--color-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            color: #bc6ff1;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #bc6ff1 0%, #6485ee 100%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--color-text);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                padding: 15px 20px;
+            }
+
+            .nav-menu {
+                display: none;
+                gap: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 120px 40px 60px;
+            overflow: hidden;
+        }
+
+        .hero-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(127, 83, 172, 0.3) 0%, rgba(100, 125, 238, 0.2) 35%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero-content {
+            flex: 1;
+            z-index: 2;
+            max-width: 600px;
+            opacity: 1;
+        }
+
+        .hero-title {
+            font-size: 64px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0ff 50%, #bc6ff1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: #b0b0e0;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .btn {
+            padding: 14px 32px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #bc6ff1 0%, #6485ee 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(188, 111, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(188, 111, 241, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #bc6ff1;
+            border: 2px solid #bc6ff1;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(188, 111, 241, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* 3D Heart Container */
+        .orb-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            height: 600px;
+            position: relative;
+            min-width: 300px;
+        }
+
+        #heart-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #heart-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .heart-fallback {
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        svg {
+            filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.6));
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 500;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .scroll-indicator.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .scroll-indicator svg {
+            width: 24px;
+            height: 24px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        /* Sections */
+        section {
+            position: relative;
+            z-index: 10;
+            padding: 100px 40px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .section-header h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #bc6ff1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-header p {
+            font-size: 16px;
+            color: #b0b0e0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Category Cards */
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .category-card {
+            background: linear-gradient(135deg, rgba(188, 111, 241, 0.1) 0%, rgba(100, 125, 238, 0.1) 100%);
+            border: 1px solid rgba(188, 111, 241, 0.2);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(188, 111, 241, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .category-card:hover::before {
+            opacity: 1;
+        }
+
+        .category-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .category-card p {
+            color: #b0b0e0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* Stories Section */
+        .stories-section {
+            margin: 100px 0;
+        }
+
+        .stories-slider {
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scroll-behavior: smooth;
+        }
+
+        .stories-slider::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .stories-slider::-webkit-scrollbar-track {
+            background: rgba(188, 111, 241, 0.1);
+            border-radius: 10px;
+        }
+
+        .stories-slider::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #bc6ff1 0%, #6485ee 100%);
+            border-radius: 10px;
+        }
+
+        .story-card {
+            flex: 0 0 350px;
+            background: linear-gradient(135deg, rgba(188, 111, 241, 0.1) 0%, rgba(100, 125, 238, 0.1) 100%);
+            border: 1px solid rgba(188, 111, 241, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
+            position: relative;
+        }
+
+        .story-card::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 120px;
+            color: rgba(188, 111, 241, 0.15);
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .story-text {
+            font-size: 15px;
+            color: #d0d0e8;
+            margin-bottom: 20px;
+            font-style: italic;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .story-author {
+            font-weight: 600;
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .team-member {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #bc6ff1 0%, #6485ee 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            box-shadow: 0 10px 30px rgba(188, 111, 241, 0.3);
+        }
+
+        .team-member h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+
+        .team-member p {
+            color: #b0b0e0;
+            font-size: 14px;
+        }
+
+        /* News Section */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .news-item {
+            background: linear-gradient(135deg, rgba(188, 111, 241, 0.1) 0%, rgba(100, 125, 238, 0.1) 100%);
+            border: 1px solid rgba(188, 111, 241, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.3s ease;
+        }
+
+        .news-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(188, 111, 241, 0.4);
+            box-shadow: 0 15px 40px rgba(188, 111, 241, 0.2);
+        }
+
+        .news-item h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .news-item p {
+            color: #b0b0e0;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 10, 26, 0.8);
+            border-top: 1px solid rgba(188, 111, 241, 0.1);
+            padding: 60px 40px;
+            text-align: center;
+            color: #b0b0e0;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero {
+                flex-direction: column;
+                padding: 120px 30px 60px;
+            }
+
+            .hero-title {
+                font-size: 48px;
+            }
+
+            .orb-container {
+                height: 400px;
+                margin-top: 40px;
+            }
+
+            section {
+                padding: 80px 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 100px 20px 40px;
+            }
+
+            .hero-title {
+                font-size: 36px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .orb-container {
+                height: 300px;
+            }
+
+            .section-header h2 {
+                font-size: 36px;
+            }
+
+            .categories, .team-grid, .news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .story-card {
+                flex: 0 0 90vw;
+            }
+
+            section {
+                padding: 60px 20px;
+            }
+        }
+
+        @keyframes heartBeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            10%, 30% {
+                transform: scale(1.1);
+            }
+            20%, 40%, 60%, 80% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        .heart-svg {
+            animation: heartBeat 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="logo">❤️ Prawdziwa Miłość</div>
+        <ul class="nav-menu">
+            <li><a href="#o-nas">O nas</a></li>
+            <li><a href="#wartości">Wartości</a></li>
+            <li><a href="#opinie">Opinie</a></li>
+            <li><a href="#zespół">Zespół</a></li>
+            <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+        <button class="menu-toggle">☰</button>
+    </nav>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-gradient"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Dołącz do społeczności opartej na autentyczności</h1>
+            <p class="hero-subtitle">Stworzyliśmy prawdziwamilosc.pl, by każdy mógł poczuć autentyczne zaufanie i zbudować relację opartą na empatii, szczerości i rozwoju.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary">Dołącz teraz</button>
+                <button class="btn btn-secondary">Dowiedz się więcej</button>
+            </div>
+        </div>
+        <div class="orb-container">
+            <div id="heart-container">
+                <canvas id="heart-canvas"></canvas>
+                <!-- SVG Heart Fallback -->
+                <svg class="heart-fallback heart-svg" id="heart-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display: none; position: absolute;">
+                    <path d="M50,90 C20,75 5,60 5,45 C5,30 15,20 25,20 C35,20 45,28 50,35 C55,28 65,20 75,20 C85,20 95,30 95,45 C95,60 80,75 50,90 Z" fill="#ff1493" stroke="#ff69b4" stroke-width="2"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- O nas Section -->
+    <section id="o-nas">
+        <div class="section-header">
+            <h2>Nasza Misja</h2>
+            <p>W świecie pełnym powierzchowności, stworzyliśmy przestrzeń dla prawdziwych połączeń</p>
+        </div>
+        
+        <div class="categories">
+            <div class="category-card">
+                <h3>💬 Szczerość</h3>
+                <p>Szczere rozmowy to podstawa dobrych relacji. Wspieramy otwartość i prawdziwość w każdej interakcji.</p>
+            </div>
+            <div class="category-card">
+                <h3>🤝 Zaufanie</h3>
+                <p>Buduj relację na zaufaniu, otwartości i szacunku. To fundament, który przetrwa próbę czasu.</p>
+            </div>
+            <div class="category-card">
+                <h3>🌱 Wspólny Rozwój</h3>
+                <p>Wspólne pasje, rozwijanie się razem, wsparcie w drodze. Razem jesteście silniejsi.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stories Section -->
+    <section class="stories-section" id="opinie">
+        <div class="section-header">
+            <h2>Prawdziwe Historii</h2>
+            <p>Ludzie, którzy znaleźli miłość na naszym portalu</p>
+        </div>
+
+        <div class="stories-slider">
+            <div class="story-card">
+                <p class="story-text">Znaleźliśmy siebie tutaj – autentyczność się opłaca! Nigdy nie wierzyliśmy, że można znaleźć prawdziwą miłość online.</p>
+                <p class="story-author">— Anna & Tomasz</p>
+            </div>
+            <div class="story-card">
+                <p class="story-text">To miejsce to prawdziwa społeczność zakorzeniona w empatii. Czuliśmy się bezpiecznie od pierwszej rozmowy.</p>
+                <p class="story-author">— Magda & Krzysztof</p>
+            </div>
+            <div class="story-card">
+                <p class="story-text">Dzięki portalowi odkryliśmy prawdziwą miłość. Dziś planujemy wspólną przyszłość i nie mogliśmy być szczęśliwsi.</p>
+                <p class="story-author">— Karolina & Jakub</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="zespół">
+        <div class="section-header">
+            <h2>Nasz Zespół</h2>
+            <p>Pasjonaci, którzy codziennie pracują nad tym, by Wasze relacje były autentyczne</p>
+        </div>
+
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="team-avatar">👩</div>
+                <h3>Justyna</h3>
+                <p>Założycielka</p>
+            </div>
+            <div class="team-member">
+                <div class="team-avatar">👨‍💻</div>
+                <h3>Piotr</h3>
+                <p>Wsparcie IT</p>
+            </div>
+            <div class="team-member">
+                <div class="team-avatar">👥</div>
+                <h3>Aleksandra</h3>
+                <p>Obsługa społeczności</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section id="kontakt">
+        <div class="section-header">
+            <h2>Najnowsze Wiadomości</h2>
+            <p>Bądź na bieżąco z tym co dzieje się na portalu</p>
+        </div>
+
+        <div class="news-grid">
+            <div class="news-item">
+                <h3>Nowe Funkcje Społeczności</h3>
+                <p>Wprowadziliśmy nowe narzędzia do tworzenia grup zainteresowań. Połącz się z ludźmi, którzy podzielają Twoje pasje.</p>
+            </div>
+            <div class="news-item">
+                <h3>Kampania Bezpieczeństwa</h3>
+                <p>Wzmacniamy systemy bezpieczeństwa. Twoja prywatność i bezpieczeństwo to nasza priorytet.</p>
+            </div>
+            <div class="news-item">
+                <h3>Sukces Społeczności</h3>
+                <p>Dziesiątki par znalazły miłość na naszym portalu. Dziękujemy za zaufanie i wsparcie!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Prawdziwa Miłość. Wszystkie prawa zastrzeżone.</p>
+        <p>Budowanie autentycznych relacji opartych na empatii i szczerości.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+
+        // ============ 3D HEART WITH THREE.JS ============
+        let scene, camera, renderer, heartGroup;
+        let scrollRotation = 0;
+
+        function initThreeJS() {
+            const container = document.getElementById('heart-canvas');
+            if (!container) {
+                console.log('Canvas not found, using SVG fallback');
+                showSVGFallback();
+                return;
+            }
+
+            const width = container.parentElement.clientWidth || 500;
+            const height = container.parentElement.clientHeight || 600;
+
+            console.log('Initializing Three.js with dimensions:', width, 'x', height);
+
+            try {
+                // Scene setup
+                scene = new THREE.Scene();
+                scene.background = null;
+
+                // Camera
+                camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 10000);
+                camera.position.z = 4;
+
+                // Renderer
+                renderer = new THREE.WebGLRenderer({ 
+                    antialias: true, 
+                    alpha: true,
+                    precision: 'highp',
+                    powerPreference: 'high-performance'
+                });
+                renderer.setSize(width, height);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.shadowMap.enabled = true;
+                container.appendChild(renderer.domElement);
+
+                console.log('Renderer created successfully');
+
+                // Lights - VERY BRIGHT
+                const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+                scene.add(ambientLight);
+                console.log('Ambient light added');
+
+                const pointLight1 = new THREE.PointLight(0xff1493, 3, 500);
+                pointLight1.position.set(10, 10, 10);
+                scene.add(pointLight1);
+
+                const pointLight2 = new THREE.PointLight(0x00ffff, 2, 500);
+                pointLight2.position.set(-10, -10, 10);
+                scene.add(pointLight2);
+
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+                directionalLight.position.set(0, 0, 15);
+                scene.add(directionalLight);
+
+                console.log('All lights added');
+
+                // Create group for heart
+                heartGroup = new THREE.Group();
+                scene.add(heartGroup);
+
+                // Create heart
+                createHeartGeometry();
+
+                // Handle resize
+                window.addEventListener('resize', onWindowResize);
+
+                // Start animation
+                animate();
+                console.log('Three.js initialized and animation started');
+
+            } catch (error) {
+                console.error('Error initializing Three.js:', error);
+                showSVGFallback();
+            }
+        }
+
+        function createHeartGeometry() {
+            try {
+                // Use a simpler approach - IcosahedronGeometry as base, then morph it
+                const geometry = new THREE.IcosahedronGeometry(1, 6);
+                
+                // Modify vertices to heart shape
+                const positions = geometry.attributes.position.array;
+                for (let i = 0; i < positions.length; i += 3) {
+                    let x = positions[i];
+                    let y = positions[i + 1];
+                    let z = positions[i + 2];
+                    
+                    // Heart shape formula
+                    const t = Math.atan2(y, x);
+                    const r = Math.sqrt(x * x + y * y + z * z);
+                    
+                    if (y < -0.5) {
+                        positions[i] = Math.sin(t) * r * 1.2;
+                        positions[i + 1] = y * 1.5;
+                        positions[i + 2] = z;
+                    }
+                }
+                geometry.attributes.position.needsUpdate = true;
+                geometry.computeVertexNormals();
+
+                // Material
+                const material = new THREE.MeshPhongMaterial({
+                    color: 0xff1493,
+                    emissive: 0xff69b4,
+                    emissiveIntensity: 0.7,
+                    shininess: 150,
+                    side: THREE.DoubleSide,
+                    wireframe: false
+                });
+
+                const heart = new THREE.Mesh(geometry, material);
+                heart.scale.set(3, 3, 3);
+                heart.castShadow = true;
+                heart.receiveShadow = true;
+                heartGroup.add(heart);
+
+                console.log('Heart geometry created');
+            } catch (error) {
+                console.error('Error creating heart geometry:', error);
+                showSVGFallback();
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (heartGroup && renderer) {
+                try {
+                    // Pulse animation
+                    const pulse = 1 + Math.sin(Date.now() * 0.003) * 0.2;
+                    heartGroup.scale.set(pulse, pulse, pulse);
+
+                    // Scroll-driven rotation
+                    heartGroup.rotation.y = scrollRotation;
+                    heartGroup.rotation.x = Math.sin(Date.now() * 0.0003) * 0.2;
+                    heartGroup.rotation.z += 0.0005;
+
+                    renderer.render(scene, camera);
+                } catch (error) {
+                    console.error('Animation error:', error);
+                }
+            }
+        }
+
+        function onWindowResize() {
+            if (!renderer) return;
+            
+            const container = document.getElementById('heart-canvas');
+            if (!container) return;
+
+            const width = container.parentElement.clientWidth || 500;
+            const height = container.parentElement.clientHeight || 600;
+
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+
+        function showSVGFallback() {
+            console.log('Showing SVG fallback');
+            const svgElement = document.getElementById('heart-svg');
+            const canvasElement = document.getElementById('heart-canvas');
+            
+            if (svgElement) {
+                svgElement.style.display = 'block';
+            }
+            if (canvasElement) {
+                canvasElement.style.display = 'none';
+            }
+        }
+
+        // Scroll-driven heart rotation
+        window.addEventListener('scroll', () => {
+            const scrollPercent = window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight);
+            scrollRotation = scrollPercent * Math.PI * 8;
+        });
+
+        // Initialize Three.js
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThreeJS);
+        } else {
+            initThreeJS();
+        }
+
+        // ============ GSAP ANIMATIONS ============
+
+        // Navigation scroll effect
+        const nav = document.querySelector('.nav');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+            lastScroll = currentScroll;
+        });
+
+        // Hide scroll indicator on scroll
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 100) {
+                scrollIndicator.classList.add('hidden');
+            } else {
+                scrollIndicator.classList.remove('hidden');
+            }
+        });
+
+        // Hero animations
+        gsap.timeline()
+            .to('.hero-title', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out',
+                delay: 0.3
+            })
+            .to('.hero-subtitle', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out'
+            }, '-=0.7')
+            .to('.hero-buttons', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out'
+            }, '-=0.7');
+
+        // Parallax effect for orb
+        gsap.to('.orb-container', {
+            scrollTrigger: {
+                trigger: '.hero',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: 1
+            },
+            y: 200,
+            scale: 0.8,
+            opacity: 0
+        });
+
+        // Animate section headers
+        gsap.utils.toArray('.section-header').forEach(header => {
+            gsap.to(header, {
+                scrollTrigger: {
+                    trigger: header,
+                    start: 'top 80%',
+                    end: 'top 50%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate category cards with stagger
+        const categoryCards = gsap.utils.toArray('.category-card');
+        categoryCards.forEach((card, index) => {
+            gsap.to(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 85%',
+                    end: 'top 60%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                delay: index * 0.2,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate story cards
+        const storyCards = gsap.utils.toArray('.story-card');
+        storyCards.forEach((card, index) => {
+            gsap.to(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 85%',
+                    end: 'top 60%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                delay: index * 0.15,
+                ease: 'power3.out'
+            });
+        });
+
+        // Horizontal scroll for stories on desktop
+        if (window.innerWidth > 768) {
+            const storiesSlider = document.querySelector('.stories-slider');
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            storiesSlider.addEventListener('mousedown', (e) => {
+                isDown = true;
+                storiesSlider.style.cursor = 'grabbing';
+                startX = e.pageX - storiesSlider.offsetLeft;
+                scrollLeft = storiesSlider.scrollLeft;
+            });
+
+            storiesSlider.addEventListener('mouseleave', () => {
+                isDown = false;
+                storiesSlider.style.cursor = 'grab';
+            });
+
+            storiesSlider.addEventListener('mouseup', () => {
+                isDown = false;
+                storiesSlider.style.cursor = 'grab';
+            });
+
+            storiesSlider.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - storiesSlider.offsetLeft;
+                const walk = (x - startX) * 2;
+                storiesSlider.scrollLeft = scrollLeft - walk;
+            });
+
+            storiesSlider.style.cursor = 'grab';
+        }
+
+        // Animate team members
+        const teamMembers = gsap.utils.toArray('.team-member');
+        teamMembers.forEach((member, index) => {
+            gsap.to(member, {
+                scrollTrigger: {
+                    trigger: member,
+                    start: 'top 85%',
+                    end: 'top 60%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                delay: index * 0.15,
+                ease: 'power3.out'
+            });
+        });
+
+        // Animate news items
+        const newsItems = gsap.utils.toArray('.news-item');
+        newsItems.forEach((item, index) => {
+            gsap.to(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: 'top 85%',
+                    end: 'top 60%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                delay: index * 0.1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Interactive cursor effect (desktop only)
+        if (window.innerWidth > 768) {
+            const cursor = document.createElement('div');
+            cursor.style.cssText = `
+                position: fixed;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background: rgba(188, 111, 241, 0.5);
+                pointer-events: none;
+                z-index: 10000;
+                transition: transform 0.2s ease;
+                mix-blend-mode: screen;
+                display: none;
+            `;
+            document.body.appendChild(cursor);
+
+            const cursorGlow = document.createElement('div');
+            cursorGlow.style.cssText = `
+                position: fixed;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                border: 1px solid rgba(188, 111, 241, 0.3);
+                pointer-events: none;
+                z-index: 9999;
+                transition: transform 0.15s ease;
+                display: none;
+            `;
+            document.body.appendChild(cursorGlow);
+
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.display = 'block';
+                cursorGlow.style.display = 'block';
+                gsap.to(cursor, {
+                    x: e.clientX - 10,
+                    y: e.clientY - 10,
+                    duration: 0.1
+                });
+                gsap.to(cursorGlow, {
+                    x: e.clientX - 20,
+                    y: e.clientY - 20,
+                    duration: 0.2
+                });
+            });
+
+            const hoverElements = document.querySelectorAll('a, button, .category-card, .story-card, .news-item');
+            hoverElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    gsap.to(cursor, { scale: 1.5, duration: 0.3 });
+                    gsap.to(cursorGlow, { scale: 1.5, duration: 0.3 });
+                });
+                el.addEventListener('mouseleave', () => {
+                    gsap.to(cursor, { scale: 1, duration: 0.3 });
+                    gsap.to(cursorGlow, { scale: 1, duration: 0.3 });
+                });
+            });
+        }
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    const offsetTop = target.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        menuToggle.addEventListener('click', () => {
+            if (navMenu.style.display === 'flex') {
+                navMenu.style.display = 'none';
+            } else {
+                navMenu.style.display = 'flex';
+                navMenu.style.flexDirection = 'column';
+                navMenu.style.position = 'absolute';
+                navMenu.style.top = '100%';
+                navMenu.style.right = '0';
+                navMenu.style.background = 'rgba(26, 26, 46, 0.98)';
+                navMenu.style.padding = '24px';
+                navMenu.style.borderRadius = '0 0 0 16px';
+                navMenu.style.minWidth = '200px';
+            }
+        });
+
+        // Add 3D tilt effect to cards
+        const cards = document.querySelectorAll('.category-card, .story-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+
+        // Add gradient animation to hero background
+        const heroGradient = document.querySelector('.hero-gradient');
+        let gradientAngle = 135;
+
+        function animateGradient() {
+            gradientAngle += 0.5;
+            if (gradientAngle >= 360) gradientAngle = 0;
+            const x = 50 + Math.cos(gradientAngle * Math.PI / 180) * 20;
+            const y = 50 + Math.sin(gradientAngle * Math.PI / 180) * 20;
+            heroGradient.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(127, 83, 172, 0.3) 0%, rgba(100, 125, 238, 0.2) 35%, transparent 70%)`;
+            requestAnimationFrame(animateGradient);
+        }
+
+        animateGradient();
+
+        // Add scroll-based color shift
+        window.addEventListener('scroll', () => {
+            const scrollPercent = window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight);
+            const hue = 260 + (scrollPercent * 40);
+            document.documentElement.style.setProperty('--color-primary', `hsl(${hue}, 45%, 55%)`);
+        });
+    </script>
+</body>
+</html>
