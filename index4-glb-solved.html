@@ -701,7 +701,7 @@
         <div class="news-grid">
             <div class="news-item">
                 <h3>Nowe Funkcje Społeczności</h3>
-                <p>Wprowadziliśmy nowe nowe narzędzia do tworzenia grup zainteresowań. Połącz się z ludźmi, którzy podzielają Twoje pasje.</p>
+                <p>Wprowadziliśmy nowe narzędzia do tworzenia grup zainteresowań. Połącz się z ludźmi, którzy podzielają Twoje pasje.</p>
             </div>
             <div class="news-item">
                 <h3>Kampania Bezpieczeństwa</h3>
@@ -723,39 +723,49 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Load GLTFLoader from unpkg -->
-    <script src="https://unpkg.com/three@r128/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
         let scene, camera, renderer, heartModel, scrollRotation = 0;
         let glbArrayBuffer = null;
-        // FIXED: Use relative path instead of raw.githubusercontent.com
         const glbUrl = './heart_compressed.glb';
 
         console.log('🚀 Starting application...');
         console.log('→ Loading GLB from:', glbUrl);
 
-        // Load GLB immediately
-        fetch(glbUrl)
-            .then(r => {
-                if (!r.ok) {
-                    throw new Error(`HTTP error! status: ${r.status}`);
+        // Wait for GLTFLoader to be available
+        function waitForLoader() {
+            return new Promise((resolve) => {
+                if (typeof THREE !== 'undefined' && typeof THREE.GLTFLoader !== 'undefined') {
+                    console.log('✓ GLTFLoader ready!');
+                    resolve();
+                } else {
+                    setTimeout(() => waitForLoader().then(resolve), 50);
                 }
-                return r.arrayBuffer();
-            })
-            .then(ab => {
-                glbArrayBuffer = ab;
-                console.log('✓ GLB loaded:', (ab.byteLength / 1024 / 1024).toFixed(2), 'MB');
-                initThreeJS();
-            })
-            .catch(e => {
-                console.error('✗ Failed to load GLB:', e);
-                // Still try to initialize (will use fallback)
-                setTimeout(initThreeJS, 100);
             });
+        }
+
+        // Load GLB immediately
+        Promise.all([
+            fetch(glbUrl)
+                .then(r => {
+                    if (!r.ok) throw new Error(`HTTP error! status: ${r.status}`);
+                    return r.arrayBuffer();
+                })
+                .then(ab => {
+                    glbArrayBuffer = ab;
+                    console.log('✓ GLB loaded:', (ab.byteLength / 1024 / 1024).toFixed(2), 'MB');
+                }),
+            waitForLoader()
+        ])
+        .then(() => initThreeJS())
+        .catch(e => {
+            console.error('✗ Failed to load GLB:', e);
+            setTimeout(initThreeJS, 100);
+        });
 
         function initThreeJS() {
             const container = document.getElementById('heart-container');
