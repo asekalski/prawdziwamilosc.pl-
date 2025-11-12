@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strona z Animacją Lottie</title>
+    <!-- Twoje oryginalne style i linki pozostają bez zmian -->
+    <style>
+        /* To jest przykładowy styl, aby strona była przewijalna. Twoje oryginalne style zostaną zachowane. */
+        body { 
+            min-height: 250vh; /* Zapewnia długość strony do przewijania */
+            background: #f0f0f0; 
+            font-family: sans-serif; 
+            text-align: center; 
+            padding-top: 50px; 
+        } 
+        h1 { color: #333; }
+
+        /* === POCZĄTEK KODU ANIMACJI === */
+        /* Styl dla kontenera animacji Lottie */
+        #lottie-animation-container {
+            position: fixed;
+            right: 50px; /* Odległość od prawej krawędzi */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;   /* Możesz dostosować szerokość */
+            height: 300px;  /* Możesz dostosować wysokość */
+            z-index: 1000;   /* Upewnia się, że animacja jest na wierzchu */
+            pointer-events: none; /* Zapobiega blokowaniu kliknięć przez animację */
+        }
+        /* === KONIEC KODU ANIMACJI === */
+    </style>
+</head>
+<body>
+
+    <!-- Tutaj znajduje się treść Twojej oryginalnej strony index21.html -->
+    <h1>Przewiń w dół, aby zobaczyć magię!</h1>
+    <p>Animacja po prawej stronie powinna reagować na przewijanie.</p>
+
+    <!-- === POCZĄTEK KODU ANIMACJI === -->
+    
+    <!-- Kontsener na animację Lottie -->
+    <div id="lottie-animation-container"></div>
+
+    <!-- Niezbędne biblioteki (Lottie Player, GSAP, ScrollTrigger) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie-web.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        
+        // !-- BARDZO WAŻNE --!
+        // Zmień poniższy adres URL na DOKŁADNY adres URL do "surowej" (raw) wersji Twojego pliku JSON na GitHubie.
+        // Powinien wyglądać mniej więcej tak: https://raw.githubusercontent.com/TWOJ_USERNAME/TWOJE_REPO/main/Couple_in_Love.json
+        const lottiePath = 'https://raw.githubusercontent.com/TWOJ_USERNAME/TWOJE_REPO/main/Couple_in_Love.json';
+
+        const lottieContainer = document.getElementById('lottie-animation-container');
+
+        if(lottieContainer) {
+          const lottieAnimation = lottie.loadAnimation({
+            container: lottieContainer,
+            renderer: 'svg',
+            loop: false,
+            autoplay: false,
+            path: lottiePath
+          });
+
+          lottieAnimation.addEventListener('DOMLoaded', function () {
+            gsap.registerPlugin(ScrollTrigger);
+
+            ScrollTrigger.create({
+              trigger: "body", // Animacja jest powiązana z przewijaniem całej strony
+              start: "top top", // Zaczyna się na samej górze
+              end: "bottom bottom", // Kończy się na samym dole
+              scrub: 1, // Wygładza ruch animacji podczas przewijania
+              onUpdate: self => {
+                const frame = lottieAnimation.totalFrames * self.progress;
+                lottieAnimation.goToAndStop(frame, true);
+              }
+            });
+          });
+        }
+      });
+    </script>
+    <!-- === KONIEC KODU ANIMACJI === -->
+
+</body>
+</html>
