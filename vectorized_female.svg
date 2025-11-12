@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
+  <defs>
+    <linearGradient id="skinGradientF" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD4B8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFB094;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="hairGradientF" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E6B84D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C9963D;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="shirtGradientF" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8F4F8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8D8E8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="pantsGradientF" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#6EC8A0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#52A881;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Shadow -->
+  <ellipse cx="200" cy="580" rx="80" ry="15" fill="rgba(0,0,0,0.1)"/>
+  
+  <!-- Legs -->
+  <g id="legs">
+    <rect x="170" y="400" width="25" height="180" rx="12" fill="url(#pantsGradientF)"/>
+    <rect x="205" y="400" width="25" height="180" rx="12" fill="url(#pantsGradientF)"/>
+    <!-- Shoes -->
+    <ellipse cx="182.5" cy="580" rx="20" ry="8" fill="#FFFFFF"/>
+    <ellipse cx="217.5" cy="580" rx="20" ry="8" fill="#FFFFFF"/>
+  </g>
+  
+  <!-- Body/Torso -->
+  <g id="torso">
+    <rect x="150" y="220" width="100" height="185" rx="20" fill="url(#shirtGradientF)"/>
+    <!-- Belt -->
+    <rect x="150" y="395" width="100" height="8" fill="#4A5568"/>
+    <circle cx="200" cy="399" r="6" fill="#2D3748"/>
+  </g>
+  
+  <!-- Arms -->
+  <g id="arms">
+    <rect x="120" y="240" width="20" height="140" rx="10" fill="url(#shirtGradientF)" transform="rotate(-10 130 240)"/>
+    <rect x="260" y="240" width="20" height="140" rx="10" fill="url(#shirtGradientF)" transform="rotate(10 270 240)"/>
+    <!-- Hands -->
+    <circle cx="127" cy="375" r="15" fill="url(#skinGradientF)"/>
+    <circle cx="273" cy="375" r="15" fill="url(#skinGradientF)"/>
+  </g>
+  
+  <!-- Neck -->
+  <rect x="185" y="200" width="30" height="25" rx="5" fill="url(#skinGradientF)"/>
+  
+  <!-- Head -->
+  <g id="head">
+    <ellipse cx="200" cy="150" rx="60" ry="70" fill="url(#skinGradientF)"/>
+    <!-- Hair -->
+    <path d="M 140 130 Q 140 80, 200 70 Q 260 80, 260 130 L 260 160 Q 250 140, 200 135 Q 150 140, 140 160 Z" 
+          fill="url(#hairGradientF)"/>
+    <!-- Face details -->
+    <circle cx="175" cy="145" r="6" fill="#5A4A42"/>
+    <circle cx="225" cy="145" r="6" fill="#5A4A42"/>
+    <path d="M 185 170 Q 200 180, 215 170" stroke="#E89B9B" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>
