@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>We Are Brand Style - Interactive Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 30px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 20px 60px;
+            background: rgba(10, 10, 10, 0.95);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.6;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 1200px;
+            padding: 0 40px;
+        }
+
+        .hero h1 {
+            font-size: clamp(60px, 10vw, 140px);
+            font-weight: 800;
+            line-height: 0.95;
+            margin-bottom: 30px;
+            letter-spacing: -3px;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .hero p {
+            font-size: clamp(18px, 2vw, 24px);
+            opacity: 0.7;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 0.3s forwards;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            padding: 18px 45px;
+            background: #ffffff;
+            color: #0a0a0a;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 0.6s forwards;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Background Animation */
+        .bg-gradient {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(100, 50, 200, 0.1), transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.3;
+            }
+        }
+
+        /* Parallax Section */
+        .parallax-section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 100px 60px;
+        }
+
+        .parallax-content {
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .parallax-content h2 {
+            font-size: clamp(50px, 8vw, 100px);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            letter-spacing: -2px;
+        }
+
+        .parallax-content p {
+            font-size: clamp(18px, 2vw, 22px);
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        /* Sticky Text Section */
+        .sticky-section {
+            position: relative;
+            height: 300vh;
+        }
+
+        .sticky-content {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 60px;
+        }
+
+        .sticky-text {
+            font-size: clamp(40px, 6vw, 80px);
+            font-weight: 800;
+            line-height: 1.2;
+            max-width: 1200px;
+            letter-spacing: -2px;
+        }
+
+        .sticky-text span {
+            opacity: 0.2;
+            transition: opacity 0.3s ease;
+        }
+
+        .sticky-text span.active {
+            opacity: 1;
+        }
+
+        /* Grid Section */
+        .grid-section {
+            padding: 150px 60px;
+            background: #0f0f0f;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .grid-item {
+            background: #1a1a1a;
+            padding: 60px 40px;
+            border-radius: 20px;
+            transition: transform 0.3s ease, background 0.3s ease;
+            cursor: pointer;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-10px);
+            background: #222222;
+        }
+
+        .grid-item h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .grid-item p {
+            font-size: 16px;
+            line-height: 1.6;
+            opacity: 0.7;
+        }
+
+        /* Image Parallax Section */
+        .image-parallax {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .parallax-bg {
+            position: absolute;
+            top: -20%;
+            left: 0;
+            width: 100%;
+            height: 140%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            will-change: transform;
+        }
+
+        .image-parallax-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+        }
+
+        .image-parallax-content h2 {
+            font-size: clamp(50px, 8vw, 100px);
+            font-weight: 800;
+            margin-bottom: 30px;
+        }
+
+        /* Footer Section */
+        .footer {
+            padding: 100px 60px;
+            background: #000000;
+            text-align: center;
+        }
+
+        .footer h2 {
+            font-size: clamp(50px, 8vw, 100px);
+            font-weight: 800;
+            margin-bottom: 40px;
+            letter-spacing: -2px;
+        }
+
+        .footer p {
+            font-size: 18px;
+            opacity: 0.6;
+            margin-bottom: 50px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Fade in animation on scroll */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            nav {
+                padding: 20px 30px;
+            }
+
+            .nav-links {
+                gap: 20px;
+            }
+
+            .parallax-section,
+            .grid-section,
+            .footer {
+                padding: 80px 30px;
+            }
+
+            .sticky-content {
+                padding: 0 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="logo">BRAND</div>
+        <ul class="nav-links">
+            <li><a href="#work">Work</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="bg-gradient"></div>
+        <div class="hero-content">
+            <h1>We Create<br>Digital Magic</h1>
+            <p>Transforming ideas into stunning digital experiences that captivate and inspire</p>
+            <a href="#work" class="hero-btn">Explore Our Work</a>
+        </div>
+    </section>
+
+    <!-- Parallax Section 1 -->
+    <section class="parallax-section fade-in" id="work">
+        <div class="parallax-content">
+            <h2>Crafting Excellence</h2>
+            <p>We believe in the power of design to transform businesses. Every project is an opportunity to push boundaries and create something extraordinary.</p>
+        </div>
+    </section>
+
+    <!-- Sticky Text Section -->
+    <section class="sticky-section">
+        <div class="sticky-content">
+            <div class="sticky-text">
+                <span class="word">Our approach </span>
+                <span class="word">combines </span>
+                <span class="word">creativity, </span>
+                <span class="word">strategy, </span>
+                <span class="word">and </span>
+                <span class="word">innovation </span>
+                <span class="word">to deliver </span>
+                <span class="word">exceptional </span>
+                <span class="word">results</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Grid Section -->
+    <section class="grid-section" id="about">
+        <div class="grid-container">
+            <div class="grid-item fade-in">
+                <h3>Strategy</h3>
+                <p>We develop comprehensive strategies that align with your business goals and target audience.</p>
+            </div>
+            <div class="grid-item fade-in">
+                <h3>Design</h3>
+                <p>Our designs are not just beautiful—they're functional, intuitive, and user-centered.</p>
+            </div>
+            <div class="grid-item fade-in">
+                <h3>Development</h3>
+                <p>We build robust, scalable solutions using the latest technologies and best practices.</p>
+            </div>
+            <div class="grid-item fade-in">
+                <h3>Brand Identity</h3>
+                <p>We create memorable brand identities that resonate with your audience and stand the test of time.</p>
+            </div>
+            <div class="grid-item fade-in">
+                <h3>Digital Marketing</h3>
+                <p>Our marketing strategies drive engagement, conversions, and sustainable growth.</p>
+            </div>
+            <div class="grid-item fade-in">
+                <h3>Innovation</h3>
+                <p>We stay ahead of trends and continuously explore new ways to deliver value to our clients.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Parallax Section -->
+    <section class="image-parallax">
+        <div class="parallax-bg" id="parallaxBg"></div>
+        <div class="image-parallax-content">
+            <h2>Think Different</h2>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <h2>Let's Create<br>Something Amazing</h2>
+        <p>Ready to start your next project?</p>
+        <div class="footer-links">
+            <a href="mailto:hello@brand.com">hello@brand.com</a>
+            <a href="tel:+48123456789">+48 123 456 789</a>
+            <a href="#">Instagram</a>
+            <a href="#">LinkedIn</a>
+            <a href="#">Behance</a>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Fade in on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.2
+        });
+
+        fadeElements.forEach(element => {
+            fadeObserver.observe(element);
+        });
+
+        // Sticky text animation
+        const stickySection = document.querySelector('.sticky-section');
+        const words = document.querySelectorAll('.sticky-text .word');
+        
+        window.addEventListener('scroll', () => {
+            if (stickySection) {
+                const rect = stickySection.getBoundingClientRect();
+                const scrollProgress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight + rect.height)));
+                
+                words.forEach((word, index) => {
+                    const wordProgress = (index + 1) / words.length;
+                    if (scrollProgress > wordProgress - 0.1) {
+                        word.classList.add('active');
+                    } else {
+                        word.classList.remove('active');
+                    }
+                });
+            }
+        });
+
+        // Parallax background effect
+        const parallaxBg = document.getElementById('parallaxBg');
+        
+        window.addEventListener('scroll', () => {
+            if (parallaxBg) {
+                const rect = parallaxBg.parentElement.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    const scrolled = window.pageYOffset;
+                    const rate = scrolled * 0.3;
+                    parallaxBg.style.transform = `translate3d(0, ${rate}px, 0)`;
+                }
+            }
+        });
+
+        // Smooth scroll for links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
