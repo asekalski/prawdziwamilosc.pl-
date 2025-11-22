@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Świadoma Kreacja - Empowerment dla Empatów</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .hero-text {
+            font-size: 120px;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-text span {
+            display: block;
+            background: linear-gradient(90deg, #00d4ff, #9c27b0, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            max-width: 800px;
+            line-height: 1.6;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s backwards;
+        }
+
+        .cta-button {
+            padding: 20px 50px;
+            font-size: 18px;
+            background: linear-gradient(90deg, #00d4ff, #9c27b0);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+            animation: fadeInUp 1s ease-out 0.6s backwards;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+
+        .content-section {
+            padding: 150px 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 80px;
+        }
+
+        .content-section:nth-child(even) {
+            background: #0a0a0a;
+            flex-direction: row-reverse;
+        }
+
+        .content-section:nth-child(odd) {
+            background: #1a1a1a;
+        }
+
+        .content-text {
+            flex: 1;
+        }
+
+        .content-title {
+            font-size: 80px;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 30px;
+        }
+
+        .content-subtitle {
+            font-size: 40px;
+            font-weight: 300;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+
+        .content-description {
+            font-size: 20px;
+            line-height: 1.8;
+            opacity: 0.8;
+            max-width: 600px;
+        }
+
+        .content-visual {
+            flex: 1;
+            height: 400px;
+            background: linear-gradient(135deg, #00d4ff, #9c27b0);
+            border-radius: 20px;
+        }
+
+        .footer {
+            padding: 100px 50px;
+            background: #000;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px;
+        }
+
+        .footer-column h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+
+        .footer-column p,
+        .footer-column a {
+            font-size: 16px;
+            line-height: 1.8;
+            opacity: 0.8;
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .footer-column a:hover {
+            color: #00d4ff;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 15px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        .newsletter-form button {
+            padding: 15px 30px;
+            background: linear-gradient(90deg, #00d4ff, #9c27b0);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: 700;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-text {
+                font-size: 60px;
+            }
+            
+            .content-section {
+                flex-direction: column !important;
+                padding: 80px 30px;
+            }
+            
+            .content-title {
+                font-size: 50px;
+            }
+            
+            .content-subtitle {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero-section">
+        <div class="hero-text">
+            <span>twoja</span>
+            <span>świadoma</span>
+            <span>kreacja</span>
+        </div>
+        <p class="hero-subtitle">
+            Wzmacniamy empatów do bycia liderami poprzez świadomość, strategię i niezapomniane transformacje.
+        </p>
+        <button class="cta-button" onclick="window.location.href='#newsletter'">WIĘCEJ</button>
+    </section>
+
+    <section class="content-section">
+        <div class="content-text">
+            <h2 class="content-subtitle">wyjątkowy</h2>
+            <h1 class="content-title">dzięki świadomości</h1>
+            <p class="content-description">
+                Tworzymy wyrazistą, niezapomnianą tożsamość empatów, która wyróŜnia Cię z tłumu i podnosi Twoją obecność w świecie.
+            </p>
+        </div>
+        <div class="content-visual"></div>
+    </section>
+
+    <section class="content-section">
+        <div class="content-text">
+            <h2 class="content-subtitle">potężne doświadczenia</h2>
+            <h1 class="content-title">dla unikalnych dusz</h1>
+            <p class="content-description">
+                Projektujemy transformacyjne doświadczenia dla świadomych empatów, kształtując Twoją tożsamość i wzmacniając Twoją moc.
+            </p>
+        </div>
+        <div class="content-visual"></div>
+    </section>
+
+    <section class="content-section">
+        <div class="content-text">
+            <h2 class="content-subtitle">uczynić Cię niezapomnianym</h2>
+            <h1 class="content-title">manifest empatów</h1>
+            <p class="content-description">
+                Od strategii do realizacji, budujemy odważną, niezapomnianą tożsamość, która wzmacnia widoczność i tworzy głębokie połączenia z innymi.
+            </p>
+        </div>
+        <div class="content-visual"></div>
+    </section>
+
+    <footer class="footer" id="newsletter">
+        <div class="footer-column">
+            <h3>KONTAKT</h3>
+            <p>Świadoma Kreacja</p>
+            <p>hello@swiadomakreacja.pl</p>
+            <p>YouTube: Świadoma Kreacja</p>
+        </div>
+
+        <div class="footer-column">
+            <h3>SOCIAL MEDIA</h3>
+            <a href="#">@swiadomakreacja</a>
+            <a href="#">YouTube Channel</a>
+            <a href="#">Facebook</a>
+            <a href="#">Instagram</a>
+        </div>
+
+        <div class="footer-column">
+            <h3>Bądź na bieżąco</h3>
+            <p>Zapisz się do newslettera dla Empatów</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Twój email" required>
+                <button type="submit">ZAPISZ SIĘ</button>
+            </form>
+        </div>
+
+        <div class="footer-column">
+            <p style="opacity: 0.5; margin-top: 50px;">Designed with ❤️ for Empaths</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Parallax effect on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.content-visual');
+            
+            parallaxElements.forEach((el, index) => {
+                const speed = 0.5;
+                const yPos = -(scrolled * speed);
+                el.style.transform = `translateY(${yPos * 0.1}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
