@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>We Are Brand - Parallax</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', Arial, sans-serif;
+            background: #111;
+        }
+        .parallax-bg {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 130vh;
+            z-index: -1;
+            background: url('https://images.unsplash.com/photo-1465101162946-4377e57745c3?auto=format&fit=crop&w=1400&q=80') center center / cover no-repeat;
+            will-change: transform;
+            filter: brightness(0.55) grayscale(10%) blur(2px);
+            transition: filter 0.6s;
+        }
+        nav {
+            width: 100%;
+            padding: 30px 40px;
+            background: rgba(14, 14, 18, 0.82);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #fff;
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .nav-links {
+            display: flex;
+            gap: 36px;
+        }
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 1rem;
+            opacity: 0.78;
+            transition: opacity 0.23s;
+        }
+        .nav-links a:hover {
+            opacity: 1;
+        }
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            color: #fff;
+            position: relative;
+        }
+        .hero h1 {
+            font-size: clamp(55px, 9vw, 120px);
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -2px;
+            margin-bottom: 32px;
+            text-shadow: 0 10px 30px #0009;
+            animation: fadeinUp 1s forwards;
+        }
+        .hero p {
+            font-size: 1.4rem;
+            color: #f7f7f7bb;
+            margin: 0 0 2.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeinUp 1s 0.25s forwards;
+        }
+        .cta {
+            display: inline-block;
+            margin-top: 3rem;
+            padding: 1.2rem 3.5rem;
+            border-radius: 40px;
+            background: #fff;
+            color: #0f0f14;
+            font-weight: bold;
+            letter-spacing: 2px;
+            font-size: 17px;
+            text-decoration: none;
+            box-shadow: 0 10px 50px #0002;
+            transition: transform 0.18s;
+        }
+        .cta:hover {
+            transform: translateY(-4px) scale(1.04);
+        }
+        /* Reverse parallax demo section */
+        .reverse-parallax {
+            min-height: 80vh;
+            padding: 100px 10vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            background: none;
+            z-index: 2;
+        }
+        .reverse-parallax h2 {
+            font-size: clamp(38px, 5vw, 78px);
+            margin-bottom: 18px;
+        }
+        .reverse-parallax p {
+            font-size: 1.2rem;
+            opacity: 0.86;
+            line-height: 1.6;
+            max-width: 740px;
+        }
+        /* Footer */
+        .footer {
+            margin-top: 80px;
+            background: rgba(10,10,10,0.98);
+            color: #eee;
+            text-align: center;
+            padding: 80px 10vw 120px;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+        @keyframes fadeinUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 550px) {
+            nav { padding: 18px 8vw; }
+            .reverse-parallax { padding: 80px 3vw; }
+            .footer { padding: 60px 2vw 60px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="parallax-bg" id="parallaxbg"></div>
+
+    <nav>
+        <span class="logo">BRAND</span>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#work">Work</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>We Create<br>Digital Magic</h1>
+        <p>Inspirujące kreacje, które wynoszą Twój wizerunek na nowy poziom. Odkrywaj przyszłość marki, która zachwyca i porusza.</p>
+        <a class="cta" href="#work">Let&apos;s Collaborate!</a>
+    </section>
+    <section class="reverse-parallax" id="about">
+        <div>
+            <h2>Reverse Parallax Backdrop</h2>
+            <p>Tło poruszające się w przeciwnym kierunku do scrolla tworzy zaskakującą, nowoczesną głębię na stronie - niech Twoja prezentacja będzie hipnotyzująca i niepowtarzalna!</p>
+        </div>
+    </section>
+
+    <section class="reverse-parallax" id="work">
+        <div>
+            <h2>Kampanie & Projekty</h2>
+            <p>Doświadcz dynamicznych prezentacji projektów, gdzie animowane zdjęcia i efekty parallax podążają (lub uciekają!) przed przewijanym tekstem.</p>
+        </div>
+    </section>
+    <footer class="footer" id="contact">
+        Agencja kreatywna 2025 &copy; <br />Zainspiruj się naszym światem.<br /><br />
+        Kontakt: <a href="mailto:hello@brand.com">hello@brand.com</a>
+    </footer>
+    <script>
+    // Unsplash Random Background (change URL if you want static image)
+    // let unsplashUrl = 'https://source.unsplash.com/1600x900/?creative,abstract,nature,technology';
+    // document.getElementById('parallaxbg').style.backgroundImage = `url(${unsplashUrl})`;
+
+    // Reverse parallax effect on background
+    const pbg = document.getElementById('parallaxbg');
+    window.addEventListener('scroll', function () {
+        // scrollY > 0: move bg up as you scroll down (reverse parallax)
+        const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+        pbg.style.transform = `translateY(${-scrolled * 0.31}px)`;
+    });
+    </script>
+</body>
+</html>
