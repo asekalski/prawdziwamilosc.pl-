@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Full Experience GSAP Tape + Gyro Parallax</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      min-height: 100vh;
+      overflow: hidden;
+      background: #0b0c1e;
+    }
+    body {
+      font-family: "Montserrat", "Georgia", serif;
+    }
+    #sliderWrap {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #0b0c1e;
+    }
+    #sectionsTape {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      will-change: transform;
+    }
+    .section {
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      left: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .bg-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh; /* Aby uniknąć luk przy paralaksie, warto czasem dać tu np. 110vh */
+      background-size: cover;
+      background-position: center;
+      z-index: 1;
+      will-change: transform;
+      /* Skalujemy lekko, aby paralaksa nie odsłaniała krawędzi */
+      transform: scale(1.1); 
+    }
+    .banner {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-shadow: 0 6px 28px #1a143abb;
+      background: rgba(16, 13, 30, 0.6);
+      padding: 48px 72px;
+      border-radius: 28px;
+      box-shadow: 0 7px 55px 9px rgba(20, 10, 40, 0.32);
+      pointer-events: none;
+      opacity: 1;
+      will-change: transform;
+    }
+    @media (max-width: 760px) {
+      .banner {
+        font-size: 1.6rem;
+        padding: 28px 10vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="sliderWrap">
+    <div id="sectionsTape">
+      <div class="section">
+        <div class="bg-image" style="background-image:url('pink_sky.webp')"></div>
+        <div class="banner">Dream Activation</div>
+      </div>
+      <div class="section">
+        <div class="bg-image" style="background-image:url('venus2.webp')"></div>
+        <div class="banner">Higher Consciousness</div>
+      </div>
+      <div class="section">
+        <div class="bg-image" style="background-image:url('love4.webp')"></div>
+        <div class="banner">Aligned Creation</div>
+      </div>
+      <div class="section">
+        <div class="bg-image" style="background-image:url('love5.webp')"></div>
+        <div class="banner">Empathic Success</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const sections = document.querySelectorAll('.section');
+const tape     = document.getElementById('sectionsTape');
+const bgs      = document.querySelectorAll('.bg-image');
+const banners  = document.querySelectorAll('.banner');
+
+let current     = 0;
+let isAnimating = false;
+const numSections = sections.length;
+let vh = 0;
+
+// Funkcja obliczająca paralaksę dla wszystkich teł
+function updateParallax() {
+  const tapeY = gsap.getProperty(tape, 'y');
+  bgs.forEach((bg, i) => {
+    // Obliczamy pozycję 'top' danej sekcji względem viewportu
+    // (pozycja taśmy + offset sekcji)
+    const sectionTop = tapeY + (i * vh);
+    
+    // Wzór na paralaksę:
+    // Jeśli mnożnik wynosi -0.5, to gdy sekcja przesuwa się o 100px w górę,
+    // tło przesuwa się o 50px w dół (względem sekcji), tworząc głębię.
+    gsap.set(bg, { y: sectionTop * -0.5 });
+  });
+}
+
+function layout() {
+  vh = window.innerHeight || document.documentElement.clientHeight;
+  tape.style.height = (vh * numSections) + 'px';
+  
+  sections.forEach((sec, i) => {
+    sec.style.height = vh + 'px';
+    sec.style.top    = (i * vh) + 'px';
+    sec.style.left   = 0;
+    sec.style.zIndex = numSections - i;
+  });
+  
+  // Ustawienie początkowe
+  gsap.set(tape, { y: -current * vh });
+  
+  // Resetujemy tła na start i ewentualnie nakładamy paralaksę startową
+  updateParallax();
+  // Dodatkowo ustawiamy startową skalę, żeby uniknąć mignięcia przy starcie
+  gsap.set(bgs, { scale: 1.1 }); 
+}
+
+layout();
+window.addEventListener('resize', () => {
+  layout();
+  updateParallax();
+});
+
+function targetY(idx) {
+  return -idx * vh;
+}
+
+function goToSection(idx, dir) {
+  if (isAnimating || idx === current || idx < 0 || idx >= numSections) return;
+  isAnimating = true;
+  
+  const fromIdx = current;
+  const toY     = targetY(idx);
+  
+  // Wygaszamy nieaktywne bannery
+  banners.forEach((b, i) => {
+    if (i !== idx && i !== fromIdx) {
+      gsap.set(b, { opacity: 0 });
+    }
+  });
+
+  // Główna animacja taśmy
+  gsap.to(tape, {
+    y: toY,
+    duration: 1.6,
+    ease: 'power2.inOut',
+    onUpdate: updateParallax, // Tutaj wywołujemy funkcję dla wszystkich teł
+    onComplete: () => {
+      isAnimating = false;
+      current = idx;
+      // Po zakończeniu upewniamy się, że aktywne tło jest wyzerowane (idealnie w centrum)
+      // a updateParallax zadbało o to, by y=0 dla aktywnej sekcji (bo sectionTop=0)
+      updateParallax(); 
+    }
+  });
+
+  // Animacje tekstów (bannerów)
+  gsap.to(banners[fromIdx], { 
+    opacity: 0, 
+    y: dir > 0 ? -40 : 40, 
+    duration: 0.6, 
+    ease: 'power2.in' 
+  });
+  
+  gsap.fromTo(banners[idx], { 
+    opacity: 0, 
+    y: dir > 0 ? 60 : -60 
+  }, { 
+    opacity: 1, 
+    y: 0, 
+    duration: 0.8, 
+    ease: 'power2.out' 
+  });
+}
+
+// --- OBSŁUGA ZDARZEŃ (Scroll, Touch, Klawisze) ---
+
+window.addEventListener('wheel', e => {
+  if (isAnimating) return;
+  const dir = e.deltaY > 50 ? 1 : e.deltaY < -50 ? -1 : 0;
+  if (dir === 1 && current < numSections - 1) { goToSection(current + 1, 1);  e.preventDefault(); }
+  if (dir === -1 && current > 0)             { goToSection(current - 1, -1); e.preventDefault(); }
+}, { passive: false });
+
+window.addEventListener('keydown', e => {
+  if (isAnimating) return;
+  if ((e.key === 'ArrowDown' || e.key === 'PageDown') && current < numSections - 1) {
+    goToSection(current + 1, 1); e.preventDefault();
+  }
+  if ((e.key === 'ArrowUp' || e.key === 'PageUp') && current > 0) {
+    goToSection(current - 1, -1); e.preventDefault();
+  }
+});
+
+let touchStartY = null;
+window.addEventListener('touchstart', e => {
+  if (e.touches.length) touchStartY = e.touches[0].clientY;
+});
+window.addEventListener('touchend', () => { touchStartY = null; });
+window.addEventListener('touchmove', e => {
+  if (isAnimating || touchStartY === null) return;
+  const dY = e.touches[0].clientY - touchStartY;
+  if (dY < -60 && current < numSections - 1) { goToSection(current + 1, 1);  touchStartY = null; }
+  if (dY >  60 && current > 0)              { goToSection(current - 1, -1); touchStartY = null; }
+}, { passive: false });
+
+// --- EFEKTY DODATKOWE (Intro, Mousemove, Gyro) ---
+
+(function animateEntryFirst() {
+  // Startowe animacje dla pierwszego slajdu
+  gsap.fromTo(banners[0], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power2.out' });
+})();
+
+// Mousemove / Gyro działają tylko gdy nie ma animacji przejścia, 
+// aby nie kłócić się z parallaxem scrolla (oba sterują 'y').
+sections.forEach((section, idx) => {
+  const bg     = bgs[idx];
+  const banner = banners[idx];
+
+  section.addEventListener('mousemove', e => {
+    if (isAnimating) return; 
+    const rect = section.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top)  / rect.height - 0.5;
+
+    gsap.to(bg, {
+      x: x * window.innerWidth * 0.02,
+      y: y * vh * 0.02, // Tutaj mały ruch y jest ok, bo parallax ustawił y na 0 dla aktywnego slajdu
+      duration: 0.6,
+      overwrite: 'auto'
+    });
+    gsap.to(banner, {
+      x: x * window.innerWidth * 0.055,
+      y: y * vh * 0.055,
+      duration: 0.35,
+      overwrite: 'auto'
+    });
+  });
+
+  section.addEventListener('mouseleave', () => {
+    if (isAnimating) return;
+    gsap.to(bg,     { x: 0, y: 0, duration: 0.75 });
+    gsap.to(banner, { x: 0, y: 0, duration: 0.5 });
+  });
+});
+
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    if (isAnimating) return;
+    const gx = (e.gamma || 0) / 45;
+    const gy = (e.beta  || 0) / 90;
+    const bg     = bgs[current];
+    const banner = banners[current];
+
+    gsap.to(bg, {
+      x: gx * window.innerWidth * 0.03,
+      y: gy * vh * 0.03,
+      duration: 0.8,
+      overwrite: 'auto'
+    });
+    gsap.to(banner, {
+      x: gx * window.innerWidth * 0.07,
+      y: gy * vh * 0.07,
+      duration: 0.55,
+      overwrite: 'auto'
+    });
+  });
+}
+</script>
+</body>
+</html>
