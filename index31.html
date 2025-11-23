@@ -150,16 +150,20 @@ function goToSection(idx, dir) {
   
   // === ZMODYFIKOWANY REVERSE PARALLAX ===
   // Odwrócony kierunek dla bgFrom i bgTo
-  tl.to(bgFrom, {
-    y: dir > 0 ? -vh : vh,  // Odwrócone: down→-vh, up→vh
+   tl.to(bgFrom, {
+    // odwrócony kierunek dla wychodzącego tła
+    y: dir > 0 ? -vh : vh,
     duration: 1.6,
     ease: 'power2.inOut'
   }, 0);
+
   tl.fromTo(bgTo,
-    { y: dir > 0 ? vh : -vh },  // Odwrócone: down→vh, up→-vh
+    // odwrócony kierunek dla wchodzącego tła (reverse parallax)
+    { y: dir > 0 ? vh : -vh },
     { y: 0, duration: 1.6, ease: 'power2.inOut' },
     0
   );
+
   // =====================================
   
   tl.to(banners[fromIdx], { opacity: 0, y: dir > 0 ? -40 : 40, duration: 0.6, ease: 'power2.in' }, 0);
