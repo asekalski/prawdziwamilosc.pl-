@@ -145,15 +145,22 @@ function goToSection(idx, dir) {
     y: toY,
     duration: 1.6,
     ease: 'power2.inOut',
-    onUpdate: updateParallax,
+    onUpdate: () => {
+      // Synchronizacja backgroundów
+      const tapeY = gsap.getProperty(tape, 'y');
+      bgs.forEach((bg, i) => {
+        if (i === idx)
+          gsap.set(bg, { y: (tapeY + idx * vh) * -0.4 });
+        else
+          gsap.set(bg, { y: 0 });
+      });
+    },
     onComplete: () => {
       isAnimating = false;
       current = idx;
-      updateParallax();
       bgs.forEach(bg => gsap.set(bg, { y: 0 }));
     }
   });
-  // Poprawiony kierunek animacji banerów (z kodu Example 2)
   gsap.to(banners[fromIdx], { opacity: 0, y: dir > 0 ? -40 : 40, duration: 0.6, ease: 'power2.in' });
   gsap.fromTo(banners[idx], { opacity: 0, y: dir > 0 ? 60 : -60 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
 }
