@@ -52,23 +52,26 @@
       z-index: 1;
       will-change: transform;
     }
-    .banner {
-      position: absolute;
-      z-index: 2;
-      text-align: center;
-      color: #fff;
-      font-size: 3rem;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-shadow: 0 6px 28px #1a143abb;
-      background: rgba(16, 13, 30, 0.6);
-      padding: 48px 72px;
-      border-radius: 28px;
-      box-shadow: 0 7px 55px 9px rgba(20, 10, 40, 0.32);
-      pointer-events: none;
-      opacity: 1;
-      will-change: transform;
-    }
+.banner {
+  position: absolute;          /* ważne */
+  top: 50%;                    /* ważne */
+  left: 50%;                   /* ważne */
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-shadow: 0 6px 28px #1a143abb;
+  background: rgba(16, 13, 30, 0.6);
+  padding: 48px 72px;
+  border-radius: 28px;
+  box-shadow: 0 7px 55px 9px rgba(20, 10, 40, 0.32);
+  pointer-events: none;
+  opacity: 1;
+  will-change: transform;
+}
     @media (max-width: 760px) {
       .banner {
         font-size: 1.6rem;
