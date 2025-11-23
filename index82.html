@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reverse Parallax Slider</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      min-height: 100vh;
+      overflow: hidden;
+      background: #0b0c1e;
+    }
+    body {
+      font-family: "Montserrat", "Georgia", serif;
+    }
+    #sliderWrap {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #0b0c1e;
+    }
+    #sectionsTape {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      will-change: transform;
+    }
+    .section {
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      left: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .bg-image {
+      position: absolute;
+      /* Tło musi być wyższe, żeby miało z czego zjeżdżać w dół */
+      height: 130vh; 
+      width: 100vw;
+      /* Zaczynamy wyżej (-15vh), żeby mieć zapas ruchu w obie strony */
+      top: -15vh; 
+      left: 0;
+      background-size: cover;
+      background-position: center;
+      z-index: 1;
+      will-change: transform;
+    }
+    .banner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-shadow: 0 6px 28px #1a143abb;
+      background: rgba(16, 13, 30, 0.6);
+      padding: 48px 72px;
+      border-radius: 28px;
+      box-shadow: 0 7px 55px 9px rgba(20, 10, 40, 0.32);
+      pointer-events: none;
+      opacity: 1;
+      will-change: transform;
+    }
+    @media (max-width: 760px) {
+      .banner {
+        font-size: 1.6rem;
+        padding: 28px 10vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="sliderWrap">
+    <div id="sectionsTape">
+      <div class="section">
+        <div class="bg-image" style="background-image:url('pink_sky.webp')"></div>
+        <div class="banner">Dream Activation</div>
+      </div>
+      <div class="section">
+        <div class="bg-image" style="background-image:url('venus2.webp')"></div>
+        <div class="banner">Higher Consciousness</div>
+      </div>
+      <div class="section">
+        <div class="bg-image" style="background-image:url('love4.webp')"></div>
+        <div class="banner">Aligned Creation</div>
+      </div>
+      <div class="section">
+        <div class="bg-image" style="background-image:url('love5.webp')"></div>
+        <div class="banner">Empathic Success</div>
+      </div>
+    </div>
+  </div>
+<script>
+const sections = document.querySelectorAll('.section');
+const tape     = document.getElementById('sectionsTape');
+const bgs      = document.querySelectorAll('.bg-image');
+const banners  = document.querySelectorAll('.banner');
+
+let current     = 0;
+let isAnimating = false;
+const numSections = sections.length;
+let vh = 0;
+
+function layout() {
+  vh = window.innerHeight || document.documentElement.clientHeight;
+  tape.style.height = (vh * numSections) + 'px';
+
+  sections.forEach((sec, i) => {
+    sec.style.height = vh + 'px';
+    sec.style.top    = (i * vh) + 'px'; // Układamy sekcje jedna pod drugą
+    sec.style.left   = 0;
+    sec.style.zIndex = numSections - i;
+  });
+
+  // Ustawienie początkowe taśmy
+  gsap.set(tape, { y: -current * vh });
+  updateParallax();
+}
+
+function updateParallax() {
+  // Pobieramy aktualne przesunięcie taśmy
+  const tapeY = gsap.getProperty(tape, 'y');
+  
+  // REVERSE PARALLAX LOGIC:
+  // Gdy tape jedzie w górę (tapeY robi się ujemne), my chcemy, żeby tło jechało w dół (dodatnie Y).
+  // Mnożymy tapeY przez ujemną wartość.
+  // Przykładowo: tapeY = -1000 (jesteśmy niżej), to bgY = 300 (tło zjechało w dół).
+  
+  const parallaxY = tapeY * -0.3; 
+
+  bgs.forEach((bg) => {
+    gsap.set(bg, { y: parallaxY });
+  });
+}
+
+layout();
+window.addEventListener('resize', layout);
+
+function goToSection(idx, dir) {
+  if (isAnimating || idx === current || idx < 0 || idx >= numSections) return;
+  isAnimating = true;
+
+  const fromIdx = current;
+  const toY = -idx * vh; // Przesuwamy taśmę w górę na odpowiednią pozycję
+
+  // Ukrywamy nieaktywne banery
+  banners.forEach((b, i) => {
+    if (i !== idx && i !== fromIdx) {
+      gsap.set(b, { opacity: 0 });
+    }
+  });
+
+  // 1. Animacja taśmy (Główny ruch)
+  gsap.to(tape, {
+    y: toY,
+    duration: 1.4,
+    ease: 'power2.inOut',
+    onUpdate: updateParallax, // Ciągła aktualizacja pozycji tła
+    onComplete: () => {
+      isAnimating = false;
+      current = idx;
+      updateParallax();
+    }
+  });
+
+  // 2. Animacje Banerów (Tekstu)
+  
+  // STARY BANER (Wychodzi)
+  // Jeśli idziemy w dół (dir > 0), stary baner leci do góry (zgodnie z ruchem taśmy)
+  gsap.to(banners[fromIdx], {
+    opacity: 0,
+    y: dir > 0 ? -100 : 100, // Ucieka w przeciwną stronę niż nowy wchodzi
+    duration: 0.8,
+    ease: 'power2.in'
+  });
+
+  // NOWY BANER (Wchodzi)
+  // Zgodnie z prośbą: "wlatywały od dołu przy scrollowaniu"
+  // Jeśli scrollujemy w dół (dir > 0), nowy baner startuje z dołu (100) i leci do środka (0)
+  gsap.fromTo(banners[idx],
+    { 
+      opacity: 0, 
+      y: dir > 0 ? 120 : -120 // Startowa pozycja
+    },
+    { 
+      opacity: 1, 
+      y: 0, 
+      duration: 1, 
+      ease: 'power3.out', 
+      delay: 0.2 // Lekkie opóźnienie, żeby wjechał po tle
+    }
+  );
+}
+
+window.addEventListener('wheel', e => {
+  if (isAnimating) return;
+  const dir = e.deltaY > 50 ? 1 : e.deltaY < -50 ? -1 : 0;
+  if (dir === 1 && current < numSections - 1) { goToSection(current + 1, 1);  e.preventDefault(); }
+  if (dir === -1 && current > 0)             { goToSection(current - 1, -1); e.preventDefault(); }
+}, { passive: false });
+
+window.addEventListener('keydown', e => {
+  if (isAnimating) return;
+  if ((e.key === 'ArrowDown' || e.key === 'PageDown') && current < numSections - 1) {
+    goToSection(current + 1, 1); e.preventDefault();
+  }
+  if ((e.key === 'ArrowUp' || e.key === 'PageUp') && current > 0) {
+    goToSection(current - 1, -1); e.preventDefault();
+  }
+});
+
+// touch logic
+let touchStartY = null;
+window.addEventListener('touchstart', e => {
+  if (e.touches.length) touchStartY = e.touches[0].clientY;
+});
+window.addEventListener('touchend', () => { touchStartY = null; });
+window.addEventListener('touchmove', e => {
+  if (isAnimating || touchStartY === null) return;
+  const dY = e.touches[0].clientY - touchStartY;
+  if (dY < -60 && current < numSections - 1) { goToSection(current + 1, 1);  touchStartY = null; }
+  if (dY >  60 && current > 0)              { goToSection(current - 1, -1); touchStartY = null; }
+}, { passive: false });
+
+// Entry pierwszej sekcji
+(function animateEntryFirst() {
+  gsap.set(bgs[0], { scale: 1.1 });
+  gsap.to(bgs[0], { scale: 1, duration: 1.8, ease: 'power2.out' });
+
+  // Pierwszy baner też wjeżdża od dołu
+  gsap.fromTo(banners[0],
+    { opacity: 0, y: 120 },
+    { opacity: 1, y: 0, duration: 1.2, delay: 0.2, ease: 'power3.out' }
+  );
+})();
+
+// Dodatek: Ruch myszką (Mouse Move Parallax)
+// Działa niezależnie od scrolla, dodaje smaczku
+sections.forEach((section, idx) => {
+  const bg     = bgs[idx];
+  const banner = banners[idx];
+
+  section.addEventListener('mousemove', e => {
+    if (isAnimating) return;
+    const rect = section.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top)  / rect.height - 0.5;
+
+    // Ważne: przy mousemove musimy uwzględnić aktualny offset scrolla (gsap.getProperty)
+    // żeby nie resetować pozycji tła
+    const currentY = gsap.getProperty(bg, "y"); 
+    
+    // Uwaga: to jest uproszczone, aby mousemove nie konfliktował z głównym parallaxem,
+    // najlepiej animować tylko X, lub używać x/yPercent
+    gsap.to(bg, {
+      x: x * window.innerWidth * 0.02,
+      duration: 1,
+      overwrite: 'auto'
+    });
+
+    gsap.to(banner, {
+      x: x * window.innerWidth * 0.03,
+      y: y * vh * 0.03,
+      duration: 0.5,
+      overwrite: 'auto'
+    });
+  });
+
+  section.addEventListener('mouseleave', () => {
+    gsap.to(bg,     { x: 0, duration: 1 });
+    gsap.to(banner, { x: 0, y: 0, duration: 1 });
+  });
+});
+</script>
+</body>
+</html>
