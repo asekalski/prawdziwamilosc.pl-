@@ -154,8 +154,18 @@ function goToSection(idx, dir) {
       bgs.forEach(bg => gsap.set(bg, { y: 0 })); // wyzeruj bg po animacji
     }
   });
-  gsap.to(banners[fromIdx], { opacity: 0, y: dir > 0 ? -40 : 40, duration: 0.6, ease: 'power2.in' });
-  gsap.fromTo(banners[idx], { opacity: 0, y: dir > 0 ? 60 : -60 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
+ gsap.to(banners[fromIdx], {
+  opacity: 0,
+  y: dir > 0 ? 40 : -40,
+  duration: 0.6,
+  ease: 'power2.in'
+});
+
+gsap.fromTo(banners[idx],
+  { opacity: 0, y: dir > 0 ? -60 : 60 },
+  { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }
+);
+
 }
 window.addEventListener('wheel', e => {
   if (isAnimating) return;
