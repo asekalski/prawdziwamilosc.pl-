@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Full Scrolling GSAP Experience</title>
+  <title>Full Experience GSAP Scroll (Mobile Friendly)</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <style>
@@ -11,8 +11,8 @@
     body { font-family: 'Montserrat', 'Georgia', serif; }
     #sectionWrap { position:absolute;top:0;left:0;width:100vw;height:100vh;will-change:transform; }
     .section { width:100vw; height:100vh; position:absolute; top:0; left:0; overflow:hidden; display:flex; justify-content:center; align-items:center; }
-    .bg-image { position:absolute;top:0;left:0;width:100vw;height:100vh;background-size:cover;background-position:center;z-index:1;will-change:transform; opacity:1;}
-    .banner { position:relative;z-index:2;text-align:center;color:#fff;font-size:3rem;font-weight:900;letter-spacing:0.06em;text-shadow:0 6px 28px #1a143abb;background:rgba(16,13,30,0.6);padding:48px 72px;border-radius:28px;box-shadow:0 7px 55px 9px rgba(20,10,40,0.32);will-change:transform,opacity;pointer-events:none; opacity:1;}
+    .bg-image { position:absolute;top:0;left:0;width:100vw;height:100vh;background-size:cover;background-position:center;z-index:1;will-change:transform; opacity:1; }
+    .banner { position:relative;z-index:2;text-align:center;color:#fff;font-size:3rem;font-weight:900;letter-spacing:0.06em;text-shadow:0 6px 28px #1a143abb;background:rgba(16,13,30,0.6);padding:48px 72px;border-radius:28px;box-shadow:0 7px 55px 9px rgba(20,10,40,0.32);pointer-events:none; opacity:1; }
     @media(max-width:760px){.banner{font-size:1.6rem;padding:28px 10vw;}}
   </style>
 </head>
@@ -43,19 +43,25 @@ const banners = document.querySelectorAll('.banner');
 let current = 0;
 let isAnimating = false;
 const numSections = sections.length;
-function getTargetY(idx){ return -Math.round(idx * window.innerHeight); }
-function goToSection(idx){
+function getWinH(){ return window.innerHeight || document.documentElement.clientHeight; }
+function getTargetY(idx){ return -Math.round(idx * getWinH()); }
+function goToSection(idx, dir){
+  if(idx < 0 || idx >= numSections) return;
   isAnimating = true;
   banners.forEach((b, i) => {
     gsap.set(b, {opacity: (i === idx ? 1 : 0)});
-    gsap.set(b, {y: (i === idx ? 60 : 0)}); // reset y so entry always works
+    gsap.set(b, {y: (i === idx ? 56 : 0)}); // reset y so entry always works
   });
+  const bg = bgs[idx];
+  // Reverse parallax BG
+  let bgFrom = (dir ? (dir > 0 ? -60 : 60) : 0);
+  gsap.fromTo(bg, {y:bgFrom}, {y:0, duration:1, ease:'power2.out', overwrite:true });
   gsap.to(sectionWrap, {
     y: getTargetY(idx),
-    duration: 1.05,
+    duration: 1,
     ease: "power3.out",
     onComplete(){ isAnimating=false; preciseSnap(idx); animateEntry(idx); },
-    onUpdate(){ reverseBgUpdate(idx); }
+    onUpdate(){},
   });
   current = idx;
 }
@@ -63,26 +69,26 @@ function preciseSnap(idx){ gsap.set(sectionWrap, {y:getTargetY(idx)}); }
 window.addEventListener('wheel',e=>{
   if(isAnimating) return;
   let dir=e.deltaY>50?1:(e.deltaY<-50?-1:0);
-  if(dir===1&&current<numSections-1) { goToSection(current+1); e.preventDefault(); }
-  if(dir===-1&&current>0) { goToSection(current-1); e.preventDefault(); }
+  if(dir===1&&current<numSections-1) { goToSection(current+1,1); e.preventDefault(); }
+  if(dir===-1&&current>0) { goToSection(current-1,-1); e.preventDefault(); }
 },{passive:false});
 window.addEventListener('keydown',e=>{
   if(isAnimating) return;
-  if((e.key==='ArrowDown'||e.key==='PageDown')&&current<numSections-1) { goToSection(current+1); e.preventDefault(); }
-  if((e.key==='ArrowUp'||e.key==='PageUp')&&current>0) { goToSection(current-1); e.preventDefault(); }
+  if((e.key==='ArrowDown'||e.key==='PageDown')&&current<numSections-1) { goToSection(current+1,1); e.preventDefault(); }
+  if((e.key==='ArrowUp'||e.key==='PageUp')&&current>0) { goToSection(current-1,-1); e.preventDefault(); }
 });
 let touchY=null;
 window.addEventListener('touchstart',e=>{if(e.touches.length)touchY=e.touches[0].clientY;});
-window.addEventListener('touchend',()=>{touchY=null;});
+window.addEventListener('touchend',()=>{touchY=null; preciseSnap(current); });
 window.addEventListener('touchmove',e=>{
  if(isAnimating||touchY===null)return;
  let dY=e.touches[0].clientY-touchY;
- if(dY<-60&&current<numSections-1){goToSection(current+1);touchY=null;}
- if(dY>60&&current>0){goToSection(current-1);touchY=null;}
+ if(dY<-50&&current<numSections-1){goToSection(current+1,1);touchY=null;}
+ if(dY>50&&current>0){goToSection(current-1,-1);touchY=null;}
 },{passive:false});
 window.addEventListener('resize',()=>{preciseSnap(current);});
 function animateEntry(idx){
-  gsap.to(bgs[idx], {scale:1.05, duration:0, overwrite:true}); // reset zoom
+  gsap.to(bgs[idx], {scale:1.05, duration:0, overwrite:true});
   gsap.to(bgs[idx], {scale:1, duration:1, ease:'power2.out'});
   gsap.to(banners[idx], {opacity:1,y:0,duration:0.6,ease:'power2.out',overwrite:true});
 }
@@ -101,10 +107,6 @@ sections.forEach((section, idx)=>{
     gsap.to(banner,{x:0,y:0,duration:0.5});
   });
 });
-function reverseBgUpdate(idx) {
-  let frac = Math.abs(sectionWrap._gsap.y/getTargetY(numSections-1)); // approx how far on tape
-  gsap.set(bgs[idx],{y: (1-frac)*-60 });
-}
 </script>
 </body>
 </html>
