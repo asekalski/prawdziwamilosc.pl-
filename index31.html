@@ -147,16 +147,21 @@ function goToSection(idx, dir) {
     }
   });
   tl.to(tape, { y: toY, duration: 1.6 }, 0);
+  
+  // === ZMODYFIKOWANY REVERSE PARALLAX ===
+  // Odwrócony kierunek dla bgFrom i bgTo
   tl.to(bgFrom, {
-    y: dir > 0 ? vh : -vh,
+    y: dir > 0 ? -vh : vh,  // Odwrócone: down→-vh, up→vh
     duration: 1.6,
     ease: 'power2.inOut'
   }, 0);
   tl.fromTo(bgTo,
-    { y: dir > 0 ? -vh : vh },
+    { y: dir > 0 ? vh : -vh },  // Odwrócone: down→vh, up→-vh
     { y: 0, duration: 1.6, ease: 'power2.inOut' },
     0
   );
+  // =====================================
+  
   tl.to(banners[fromIdx], { opacity: 0, y: dir > 0 ? -40 : 40, duration: 0.6, ease: 'power2.in' }, 0);
   tl.fromTo(banners[idx], { opacity: 0, y: dir > 0 ? 60 : -60 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.4);
 }
