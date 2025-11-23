@@ -136,10 +136,8 @@ function goToSection(idx, dir) {
       gsap.set(b, { opacity: 0 });
     }
   });
-  // reverse parallax: nowy background wjeżdża z góry
   let bgFrom = bgs[fromIdx];
   let bgTo = bgs[idx];
-  // banner – jak dotąd, wjeżdża z dołu
   const tl = gsap.timeline({
     defaults: { ease: 'power2.inOut' },
     onComplete: () => {
@@ -150,12 +148,12 @@ function goToSection(idx, dir) {
   });
   tl.to(tape, { y: toY, duration: 1.6 }, 0);
   tl.to(bgFrom, {
-    y: vh,
+    y: dir > 0 ? vh : -vh,
     duration: 1.6,
     ease: 'power2.inOut'
   }, 0);
   tl.fromTo(bgTo,
-    { y: -vh }, // tu zmiana! nowy bg startuje z góry -vh, nie z dołu +vh
+    { y: dir > 0 ? -vh : vh },
     { y: 0, duration: 1.6, ease: 'power2.inOut' },
     0
   );
