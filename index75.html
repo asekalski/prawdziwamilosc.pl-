@@ -218,12 +218,12 @@ window.addEventListener('touchmove', e => {
   gsap.set(bgs[0], { scale: 1.08 });
   gsap.to(bgs[0], { scale: 1, duration: 1.5, ease: 'power2.out' });
 
-  // też z dołu
   gsap.fromTo(banners[0],
-    { opacity: 0, y: 80 },
+    { opacity: 0, y: 80 },      // start z dołu
     { opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power2.out' }
   );
 })();
+
 
 
 sections.forEach((section, idx) => {
