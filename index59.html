@@ -140,18 +140,23 @@ function goToSection(idx, dir){
     });
   }
 
-  // Animuj tło na przemian jak w drugim przykładzie
-  bgs.forEach((bg, i) => {
-    let distance = getWinH();
-    let bgStart = (i === idx) ? (dir > 0 ? -distance : dir < 0 ? distance : 0) : 0;
-    let bgEnd = 0;
-    if(i === idx){
-      gsap.fromTo(bg, { y: bgStart }, { y: bgEnd, duration: 1, ease: 'power2.out', overwrite: true });
-    } else {
-      gsap.set(bg, { y: 0 });
-    }
-  });
+// Animuj tło na przemian jak w drugim przykładzie
+bgs.forEach((bg, i) => {
+  let distance = getWinH();
+  let startPos = 0; // aktualna pozycja tła
+  let bgEnd = 0; // docelowa pozycja
 
+  if(i === idx) {
+    // Nowe tło wjeżdża OD GÓRY
+    gsap.fromTo(bg, { y: -distance }, { y: 0, duration: 1, ease: 'power2.out', overwrite: true });
+  } else if(i === current) {
+    // Stare tło zjeżdża W DÓŁ
+    gsap.fromTo(bg, { y: 0 }, { y: distance, duration: 1, ease: 'power2.out', overwrite: true });
+  } else {
+    // Tła innych sekcji
+    gsap.set(bg, { y: 0 });
+  }
+});
   gsap.to(sectionWrap, {
     y: getTargetY(idx),
     duration: 1,
