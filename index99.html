@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prawdziwa Miłość - Reverse Scrolling Parallax</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+            background: #000;
+        }
+        .section {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .background-slide {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-size: cover;
+            background-position: top center;
+            z-index: 1;
+            will-change: transform;
+            pointer-events: none;
+        }
+        .banner-slide {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 40px 60px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 20px;
+            max-width: 800px;
+            backdrop-filter: blur(10px);
+            will-change: transform;
+        }
+        .banner-slide h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        .banner-slide p {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+        @media(max-width:768px){
+            .banner-slide h1{font-size:2.5rem;}
+            .banner-slide p{font-size:1.1rem;}
+            .banner-slide{padding:30px 40px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <div class="background-slide" style="background-image:url('venus2.webp')"></div>
+        <div class="banner-slide">
+            <h1>Prawdziwa Miłość</h1>
+            <p>Odkryj prawdziwą głębię uczuć, która przekracza granice czasu i przestrzeni.</p>
+        </div>
+    </div>
+    <div class="section">
+        <div class="background-slide" style="background-image:url('pingy_sky.webp')"></div>
+        <div class="banner-slide">
+            <h1>Połączenie Serc</h1>
+            <p>Kiedy dwie dusze odnajdują się w harmonii, powstaje coś magicznego i wiecznego.</p>
+        </div>
+    </div>
+    <div class="section">
+        <div class="background-slide" style="background-image:url('love4.webp')"></div>
+        <div class="banner-slide">
+            <h1>Wieczna Więź</h1>
+            <p>Prawdziwa miłość to nie tylko uczucie, to świadomy wybór każdego dnia.</p>
+        </div>
+    </div>
+    <div class="section">
+        <div class="background-slide" style="background-image:url('love5.webp')"></div>
+        <div class="banner-slide">
+            <h1>Droga Razem</h1>
+            <p>Wspólna podróż przez życie, pełna zaufania, wzajemnego wsparcia i nieskończonej miłości.</p>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+        const sections = gsap.utils.toArray('.section');
+        // Reverse scrolling parallax: background jedzie normalnie z góry w dół, banery z dołu do góry
+        sections.forEach((section,i)=>{
+            const bg  = section.querySelector('.background-slide');
+            const ban = section.querySelector('.banner-slide');
+            // Background moves DOWN (reverse, wjeżdża przy scrollu - taśma od góry)
+            gsap.fromTo(bg,{yPercent:-100},{yPercent:100,ease:'none',
+              scrollTrigger:{
+                trigger:section,start:'top top',end:'bottom top',scrub:true}
+            });
+            // Banner moves UP (normal, baner do środka z dołu)
+            gsap.fromTo(ban,{yPercent:100},{yPercent:0,opacity:1,ease:'power2.out',
+              scrollTrigger:{trigger:section,start:'top bottom',end:'top top',scrub:true}
+            });
+        });
+        // Płynne przejście między sekcjami - scroll snapping
+        ScrollTrigger.create({
+          snap: 1/(sections.length-1),
+          duration:1.2,
+          ease:'power2.inOut',
+          delay:0
+        });
+    </script>
+</body>
+</html>
