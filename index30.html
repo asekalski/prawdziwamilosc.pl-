@@ -6,11 +6,12 @@
   <title>Full Experience GSAP Tape + Gyro Parallax</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <style>
-    html, body, #sliderWrap, #sectionsTape {
+    html, body {
       margin: 0;
       padding: 0;
       width: 100vw;
       min-height: 100vh;
+      overflow: hidden;
       background: #0b0c1e;
     }
     body {
@@ -27,14 +28,14 @@
       top: 0;
       left: 0;
       width: 100vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
+      will-change: transform;
     }
     .section {
       width: 100vw;
       height: 100vh;
-      position: relative;
+      position: absolute;
+      left: 0;
+      top: 0;
       overflow: hidden;
       display: flex;
       justify-content: center;
@@ -102,17 +103,21 @@ const sections = document.querySelectorAll('.section');
 const tape     = document.getElementById('sectionsTape');
 const bgs      = document.querySelectorAll('.bg-image');
 const banners  = document.querySelectorAll('.banner');
-
 let current     = 0;
 let isAnimating = false;
 const numSections = sections.length;
 let vh = 0;
-// Nowa taśma – flex column + sticky backgrounds
 function layout() {
   vh = window.innerHeight || document.documentElement.clientHeight;
-  tape.style.height = vh + 'px'; // tape widoczny zawsze w oknie
-  sections.forEach((sec) => {
+  tape.style.height = (vh * numSections) + 'px';
+  sections.forEach((sec, i) => {
     sec.style.height = vh + 'px';
+    sec.style.top    = (i * vh) + 'px';
+    sec.style.left   = 0;
+  });
+  gsap.set(tape, { y: -current * vh });
+  bgs.forEach(bg => {
+    gsap.set(bg, { y: 0 });
   });
 }
 layout();
