@@ -175,24 +175,9 @@ function goToSection(idx, dir) {
     }
   });
 
-  // --- ANIMACJA BANERÓW Z PRZYKŁADU 2 ---
-  // Stary baner znika w kierunku ruchu
-  gsap.to(banners[fromIdx], { 
-    opacity: 0, 
-    y: dir > 0 ? -40 : 40, 
-    duration: 0.6, 
-    ease: 'power2.in',
-    overwrite: 'auto',
-    onComplete: function() {
-      gsap.set(banners[fromIdx], { clearProps: "transform,opacity" });
-    }
-  });
-
-  // Nowy baner wjeżdża z przeciwnej strony
-  gsap.fromTo(banners[idx], 
-    { opacity: 0, y: dir > 0 ? 60 : -60 }, 
-    { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', overwrite: 'auto' }
-  );
+  // --- ANIMACJA BANERÓW DOKŁADNIE JAK W PRZYKŁADZIE 2 ---
+  gsap.to(banners[fromIdx], { opacity: 0, y: dir > 0 ? -40 : 40, duration: 0.6, ease: 'power2.in' });
+  gsap.fromTo(banners[idx], { opacity: 0, y: dir > 0 ? 60 : -60 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
 }
 
 // --- OBSŁUGA ZDARZEŃ ---
@@ -227,11 +212,7 @@ window.addEventListener('touchmove', e => {
 
 // --- ANIMACJA STARTOWA (od dołu jak w Przykładzie 2) ---
 (function animateEntryFirst() {
-  gsap.set(banners[0], { clearProps: "transform,opacity" });
-  gsap.fromTo(banners[0], 
-    { opacity: 0, y: 40 }, 
-    { opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power2.out' }
-  );
+  gsap.fromTo(banners[0], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power2.out' });
 })();
 
 // --- MOUSEMOVE / PARALLAX ---
@@ -263,7 +244,6 @@ sections.forEach((section, idx) => {
   section.addEventListener('mouseleave', () => {
     if(isAnimating) return;
     gsap.to(bg,     { xPercent: 0, yPercent: 0, duration: 0.75, overwrite: 'auto' });
-    gsap.set(banner, { clearProps: "transform" });
     gsap.to(banner, { xPercent: 0, yPercent: 0, duration: 0.5, overwrite: 'auto' });
   });
 });
@@ -286,7 +266,6 @@ if (window.DeviceOrientationEvent) {
       overwrite: 'auto'
     });
 
-    gsap.set(banner, { clearProps: "transform" });
     gsap.to(banner, {
       xPercent: gx * 7,
       yPercent: gy * 7,
