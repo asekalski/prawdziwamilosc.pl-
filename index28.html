@@ -11,8 +11,9 @@
     body { font-family: 'Montserrat', 'Georgia', serif; }
     #sectionWrap { position:absolute;top:0;left:0;width:100vw;height:100vh;will-change:transform; }
     .section { width:100vw; height:100vh; position:absolute; top:0; left:0; overflow:hidden; display:flex; justify-content:center; align-items:center; }
-    .bg-image { position:absolute;top:0;left:0;width:100vw;height:100vh;background-size:cover;background-position:center;z-index:1;will-change:transform;}
-    .banner { position:relative;z-index:2;text-align:center;color:#fff;font-size:3rem;font-weight:900;letter-spacing:0.06em;text-shadow:0 6px 28px #1a143abb;background:rgba(16,13,30,0.6);padding:48px 72px;border-radius:28px;box-shadow:0 7px 55px 9px rgba(20,10,40,0.32);will-change:transform,opacity;pointer-events:none; }
+    .bg-image { position:absolute;top:0;left:0;width:100vw;height:100vh;background-size:cover;background-position:center;z-index:1;will-change:transform;opacity:1;}
+    .banner { position:relative;z-index:2;text-align:center;color:#fff;font-size:3rem;font-weight:900;letter-spacing:0.06em;text-shadow:0 6px 28px #1a143abb;background:rgba(16,13,30,0.6);padding:48px 72px;border-radius:28px;box-shadow:0 7px 55px 9px rgba(20,10,40,0.32);will-change:transform,opacity;pointer-events:none; opacity:1;}
+    .banner.hide { opacity:0 !important; }
     @media(max-width:760px){.banner{font-size:1.6rem;padding:28px 10vw;}}
   </style>
 </head>
@@ -47,7 +48,7 @@ const numSections = sections.length;
 function getTargetY(idx){ return -Math.round(idx * window.innerHeight); }
 function goToSection(idx){
   isAnimating = true;
-  // Tape slide animation for full section
+  hideAllBannersExcept(idx);
   gsap.to(sectionWrap, {
     y: getTargetY(idx),
     duration: 1.05,
@@ -58,7 +59,17 @@ function goToSection(idx){
   current = idx;
 }
 function preciseSnap(idx){ gsap.set(sectionWrap, {y:getTargetY(idx)}); }
-// Wheel, keyboard, touch handlers
+function hideAllBannersExcept(activeIdx){
+  banners.forEach((b, i) => {
+    if(i !== activeIdx) {
+      gsap.set(b, {opacity:0});
+      b.classList.add('hide');
+    } else {
+      gsap.set(b, {opacity:1});
+      b.classList.remove('hide');
+    }
+  });
+}
 window.addEventListener('wheel',e=>{
   if(isAnimating) return;
   let dir=e.deltaY>50?1:(e.deltaY<-50?-1:0);
@@ -82,8 +93,9 @@ window.addEventListener('touchmove',e=>{
 window.addEventListener('resize',()=>{preciseSnap(current);});
 // Entry effect (zoom bg, fade banner)
 function animateEntry(idx){
-  gsap.fromTo(bgs[idx], {scale:1.05}, {scale:1, duration:1, ease:'power2.out'});
-  gsap.fromTo(banners[idx], {opacity:0, y:60}, {opacity:1, y:0, duration:0.8, ease:'power2.out'});
+  gsap.to(bgs[idx], {scale:1.05, duration:0, overwrite:true}); // reset zoom
+  gsap.to(bgs[idx], {scale:1, duration:1, ease:'power2.out'}); // animate zoom in
+  gsap.fromTo(banners[idx], {opacity:0, y:60},{opacity:1, y:0, duration:0.8, ease:'power2.out', overwrite:true});
 }
 animateEntry(0);
 // Mouse parallax & reverse parallax
@@ -101,8 +113,12 @@ sections.forEach((section, idx)=>{
     gsap.to(banner,{x:0,y:0,duration:0.5});
   });
 });
+// Reverse BG scrolling — tło przesuwa się w przeciwną stronę przy scrollu
 function reverseBgAnim(idx){
-  gsap.to(bgs[idx], {y:32, duration:0.42, ease:'power2.inOut', onComplete(){ gsap.to(bgs[idx],{y:0,duration:0.7, ease:"power2.out"}); }});
+  let revY = current < idx ? -32 : (current > idx ? 32 : 0);
+  gsap.to(bgs[idx], {y:revY, duration:0.38, ease:'power3.inOut', onComplete(){
+    gsap.to(bgs[idx],{y:0,duration:0.7,ease:'power2.out'});
+  }});
 }
 </script>
 </body>
