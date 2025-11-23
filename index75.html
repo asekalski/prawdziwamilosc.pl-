@@ -168,17 +168,17 @@ function goToSection(idx, dir) {
     }
   });
 
-// stary baner znika w kierunku scrolla
+// STARY baner ma znikać DO GÓRY przy scrollu w dół
 gsap.to(banners[fromIdx], {
   opacity: 0,
-  y: dir > 0 ? -80 : 80,   // dół scrolla -> ucieka do GÓRY
+  y: dir > 0 ? -80 : 80,   // dół scrolla -> -80 (do góry), góra scrolla -> 80 (w dół)
   duration: 0.6,
   ease: 'power2.in'
 });
 
-// nowy wjeżdża z przeciwnej strony
+// NOWY baner ma wjeżdżać Z DOŁU przy scrollu w dół
 gsap.fromTo(banners[idx],
-  { opacity: 0, y: dir > 0 ? 80 : -80 },  // dół scrolla -> start z DOŁU
+  { opacity: 0, y: dir > 0 ? 80 : -80 },  // dół scrolla -> 80 (z dołu), góra scrolla -> -80 (z góry)
   { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }
 );
 }
