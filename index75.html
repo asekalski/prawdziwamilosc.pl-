@@ -53,7 +53,7 @@
       will-change: transform;
     }
     .banner {
-      position: relative;
+      position: absolute;
       z-index: 2;
       text-align: center;
       color: #fff;
@@ -165,19 +165,19 @@ function goToSection(idx, dir) {
     }
   });
 
-  // STARY baner znika w kierunku scrolla
-  gsap.to(banners[fromIdx], {
-    opacity: 0,
-    y: dir > 0 ? -40 : 40,
-    duration: 0.6,
-    ease: 'power2.in'
-  });
+// stary baner znika w kierunku scrolla
+gsap.to(banners[fromIdx], {
+  opacity: 0,
+  y: dir > 0 ? -80 : 80,   // dół scrolla -> ucieka do GÓRY
+  duration: 0.6,
+  ease: 'power2.in'
+});
 
-  // NOWY baner: scroll w dół -> start z DOŁU, scroll w górę -> start z GÓRY
-  gsap.fromTo(banners[idx],
-    { opacity: 0, y: dir > 0 ? 60 : -60 },
-    { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }
-  );
+// nowy wjeżdża z przeciwnej strony
+gsap.fromTo(banners[idx],
+  { opacity: 0, y: dir > 0 ? 80 : -80 },  // dół scrolla -> start z DOŁU
+  { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }
+);
 }
 
 window.addEventListener('wheel', e => {
