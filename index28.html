@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Full Experience GSAP Scroll (Mobile Friendly)</title>
+  <title>Full GSAP Scroll Premium – Fixed Mobile & Reverse BG</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <style>
@@ -50,22 +50,35 @@ function goToSection(idx, dir){
   isAnimating = true;
   banners.forEach((b, i) => {
     gsap.set(b, {opacity: (i === idx ? 1 : 0)});
-    gsap.set(b, {y: (i === idx ? 56 : 0)}); // reset y so entry always works
+    gsap.set(b, {y: (i === idx ? 56 : 0)});
   });
-  const bg = bgs[idx];
-  // Reverse parallax BG
-  let bgFrom = (dir ? (dir > 0 ? -60 : 60) : 0);
-  gsap.fromTo(bg, {y:bgFrom}, {y:0, duration:1, ease:'power2.out', overwrite:true });
+  // Reverse BG parallax: move opposite direction with full transition
+  bgs.forEach((bg, i) => {
+    let distance = getWinH();
+    let bgStart = (i === idx) ? (dir>0?-distance:dir<0?distance:0) : 0;
+    let bgEnd = 0;
+    if(i === idx){
+      gsap.fromTo(bg,{y:bgStart},{y:bgEnd,duration:1,ease:'power2.out',overwrite:true});
+    }else{
+      gsap.set(bg,{y:0});
+    }
+  });
   gsap.to(sectionWrap, {
     y: getTargetY(idx),
     duration: 1,
     ease: "power3.out",
-    onComplete(){ isAnimating=false; preciseSnap(idx); animateEntry(idx); },
+    onComplete(){
+      isAnimating=false;
+      snapAlign(idx);
+      animateEntry(idx);
+    },
     onUpdate(){},
   });
   current = idx;
 }
-function preciseSnap(idx){ gsap.set(sectionWrap, {y:getTargetY(idx)}); }
+function snapAlign(idx){
+  setTimeout(()=>{gsap.set(sectionWrap, {y:getTargetY(idx)});},60); // bonus snap for mobile viewport settle
+}
 window.addEventListener('wheel',e=>{
   if(isAnimating) return;
   let dir=e.deltaY>50?1:(e.deltaY<-50?-1:0);
@@ -77,16 +90,19 @@ window.addEventListener('keydown',e=>{
   if((e.key==='ArrowDown'||e.key==='PageDown')&&current<numSections-1) { goToSection(current+1,1); e.preventDefault(); }
   if((e.key==='ArrowUp'||e.key==='PageUp')&&current>0) { goToSection(current-1,-1); e.preventDefault(); }
 });
-let touchY=null;
+let touchY=null, touchTimer=null;
 window.addEventListener('touchstart',e=>{if(e.touches.length)touchY=e.touches[0].clientY;});
-window.addEventListener('touchend',()=>{touchY=null; preciseSnap(current); });
+window.addEventListener('touchend',()=>{
+  touchY=null;
+  setTimeout(()=>snapAlign(current),100);
+});
 window.addEventListener('touchmove',e=>{
  if(isAnimating||touchY===null)return;
  let dY=e.touches[0].clientY-touchY;
  if(dY<-50&&current<numSections-1){goToSection(current+1,1);touchY=null;}
  if(dY>50&&current>0){goToSection(current-1,-1);touchY=null;}
 },{passive:false});
-window.addEventListener('resize',()=>{preciseSnap(current);});
+window.addEventListener('resize',()=>{snapAlign(current);});
 function animateEntry(idx){
   gsap.to(bgs[idx], {scale:1.05, duration:0, overwrite:true});
   gsap.to(bgs[idx], {scale:1, duration:1, ease:'power2.out'});
@@ -99,8 +115,8 @@ sections.forEach((section, idx)=>{
     let rect=section.getBoundingClientRect();
     let x=(e.clientX-rect.left)/rect.width-0.5;
     let y=(e.clientY-rect.top)/rect.height-0.5;
-    gsap.to(bg,{x:x*window.innerWidth*0.02,y:y*window.innerHeight*0.02,duration:0.6,overwrite:true});
-    gsap.to(banner,{x:x*window.innerWidth*0.055,y:y*window.innerHeight*0.055,duration:0.35,overwrite:true});
+    gsap.to(bg,{x:x*window.innerWidth*0.02,y:y*getWinH()*0.02,duration:0.6,overwrite:true});
+    gsap.to(banner,{x:x*window.innerWidth*0.055,y:y*getWinH()*0.055,duration:0.35,overwrite:true});
   });
   section.addEventListener('mouseleave',()=>{
     gsap.to(bg,{x:0,y:0,duration:0.75});
