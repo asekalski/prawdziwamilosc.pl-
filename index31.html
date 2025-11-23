@@ -141,11 +141,11 @@ function goToSection(idx, dir) {
     duration: 1.6,
     ease: 'power2.inOut',
     onUpdate: () => {
-      // PRAWIDŁOWE reverse: background idzie w górę gdy taśma w dół (czyli odwrotny v ruchu tape)
+      // KIERUNEK: teraz taśma backgroundu przesuwa się przeciwnie do taśmy (reverse parallax)
       const tapeY = gsap.getProperty(tape, 'y');
       bgs.forEach((bg, i) => {
         if (i === idx)
-          gsap.set(bg, { y: -(tapeY + idx * vh) * 0.4 });
+          gsap.set(bg, { y: (tapeY + idx * vh) * 0.4 });
         else
           gsap.set(bg, { y: 0 });
       });
