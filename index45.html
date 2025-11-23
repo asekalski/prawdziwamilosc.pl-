@@ -43,11 +43,11 @@
     }
     .bg-image {
       position: absolute;
-      /* ZMIANA: Tło musi być wyższe niż 100vh, aby mogło się przesuwać "przeciwnie" bez ucinania */
-      height: 140vh; 
+      /* ZMIANA KLUCZOWA: Tło musi być bardzo wysokie, bo przesuwamy je przeciwnie do ruchu */
+      height: 160vh; 
       width: 100vw;
-      /* ZMIANA: Centrujemy nadmiarową wysokość (-20vh przy wysokości 140vh daje środek) */
-      top: -20vh; 
+      /* ZMIANA KLUCZOWA: Centrowanie (160vh - 100vh) / 2 = 30vh */
+      top: -30vh; 
       left: 0;
       background-size: cover;
       background-position: center;
@@ -112,16 +112,18 @@ let isAnimating = false;
 const numSections = sections.length;
 let vh = 0;
 
-// Główna funkcja paralaksy
+// --- GŁÓWNA LOGIKA PARALAKSY ---
 function updateParallax() {
   const tapeY = gsap.getProperty(tape, 'y');
   bgs.forEach((bg, i) => {
+    // sectionTop: odległość góry sekcji od góry ekranu
     const sectionTop = tapeY + (i * vh);
     
-    // ZMIANA: Używamy dodatniego mnożnika (0.2).
-    // Kiedy sekcja jest na dole (sectionTop > 0), tło przesuwa się w dół (y > 0).
-    // Dzięki temu widzimy "górę" obrazka, która zjeżdża w dół.
-    gsap.set(bg, { y: sectionTop * 0.2 });
+    // ZMIANA KLUCZOWA NA UJEMNY MNOŻNIK:
+    // - Gdy sekcja jest na dole (sectionTop > 0), y tła jest ujemne (przesunięte w górę).
+    // - Sekcja jedzie w górę -> sectionTop maleje do 0 -> y tła rośnie do 0 (jedzie w dół).
+    // Efekt: Obrazek "spływa" na dół, podczas gdy sekcja wyjeżdża do góry.
+    gsap.set(bg, { y: sectionTop * -0.5 });
   });
 }
 
@@ -167,7 +169,7 @@ function goToSection(idx, dir) {
     y: toY,
     duration: 1.6,
     ease: 'power2.inOut',
-    onUpdate: updateParallax, 
+    onUpdate: updateParallax, // Ciągła aktualizacja pozycji teł
     onComplete: () => {
       isAnimating = false;
       current = idx;
@@ -179,7 +181,7 @@ function goToSection(idx, dir) {
   gsap.fromTo(banners[idx], { opacity: 0, y: dir > 0 ? 60 : -60 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
 }
 
-// --- INPUTS ---
+// --- OBSŁUGA WEJŚCIA (SCROLL / KLAWISZE) ---
 window.addEventListener('wheel', e => {
   if (isAnimating) return;
   const dir = e.deltaY > 50 ? 1 : e.deltaY < -50 ? -1 : 0;
@@ -209,10 +211,9 @@ window.addEventListener('touchmove', e => {
   if (dY >  60 && current > 0)              { goToSection(current - 1, -1); touchStartY = null; }
 }, { passive: false });
 
-// --- EXTRAS ---
+// --- DODATKI ---
 (function animateEntryFirst() {
-  // Mały scale dla efektu wejścia
-  gsap.set(bgs[0], { scale: 1.05 });
+  gsap.set(bgs[0], { scale: 1.1 });
   gsap.to(bgs[0], { scale: 1, duration: 1.5, ease: 'power2.out' });
   gsap.fromTo(banners[0], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power2.out' });
 })();
@@ -227,15 +228,12 @@ sections.forEach((section, idx) => {
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top)  / rect.height - 0.5;
 
-    // Podczas ruchu myszką uwzględniamy aktualny offset paralaksy (sectionTop * 0.2)
-    // Ponieważ sectionTop dla aktywnego slajdu = 0, poniższe jest proste, 
-    // ale dla poprawności dodajemy do 'y' wartość transformacji. 
-    // W tym prostym setupie nadpisujemy y, co zresetowałoby paralaksę,
-    // dlatego mousemove działa najlepiej gdy slajd jest "wyzerowany" (aktywny).
-    
+    // Przy mousemove nadpisujemy Y, ale musimy uwzględnić offset paralaksy
+    // Dla uproszczenia w tym przykładzie mousemove działa subtelnie wokół punktu 0,
+    // co jest poprawne tylko dla aktywnego slajdu.
     gsap.to(bg, {
       x: x * window.innerWidth * 0.02,
-      y: y * vh * 0.02, // Delikatny ruch myszką względem środka
+      y: y * vh * 0.02, 
       duration: 0.6,
       overwrite: 'auto'
     });
@@ -249,7 +247,7 @@ sections.forEach((section, idx) => {
 
   section.addEventListener('mouseleave', () => {
     if(isAnimating) return;
-    gsap.to(bg,     { x: 0, y: 0, duration: 0.75 }); // Powrót do 0 jest ok dla aktywnego slajdu
+    gsap.to(bg,     { x: 0, y: 0, duration: 0.75 });
     gsap.to(banner, { x: 0, y: 0, duration: 0.5 });
   });
 });
