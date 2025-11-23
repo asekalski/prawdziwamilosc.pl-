@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full Experience Scrolling</title>
+  <!-- GSAP, ScrollTrigger, ScrollSmoother CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/ScrollSmoother.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100%;
+      overflow-x: hidden;
+      background: #0b0c1e;
+    }
+    body {
+      font-family: 'Montserrat', 'Georgia', serif;
+    }
+    .smooth-wrapper {
+      position: relative;
+      width: 100vw;
+      min-height: 100vh;
+    }
+    .smooth-content {
+      width: 100vw;
+      min-height: 100vh;
+    }
+    .section {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .bg-image {
+      position: absolute;
+      top:0; left:0; width:100vw; height:100vh;
+      background-size: cover;
+      background-position: center;
+      z-index:1;
+      will-change: transform;
+      transition: filter 0.2s;
+    }
+    .banner {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-shadow: 0 6px 28px #1a143abb;
+      background: rgba(16,13,30,0.6);
+      padding: 48px 72px;
+      border-radius: 28px;
+      box-shadow:0 7px 55px 9px rgba(20,10,40,0.32);
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+    @media (max-width:760px) {
+      .banner { font-size: 1.6rem; padding: 28px 10vw; }
+    }
+  </style>
+</head>
+<body>
+  <!-- GSAP ScrollSmoother wrapper -->
+  <div class="smooth-wrapper">
+    <div class="smooth-content">
+      <!-- Section 1 -->
+      <section class="section" data-bg="pink_sky.webp">
+        <div class="bg-image" style="background-image:url('pink_sky.webp');"></div>
+        <div class="banner">Dream Activation</div>
+      </section>
+      <!-- Section 2 -->
+      <section class="section" data-bg="venus2.webp">
+        <div class="bg-image" style="background-image:url('venus2.webp');"></div>
+        <div class="banner">Higher Consciousness</div>
+      </section>
+      <!-- Section 3 -->
+      <section class="section" data-bg="love4.webp">
+        <div class="bg-image" style="background-image:url('love4.webp');"></div>
+        <div class="banner">Aligned Creation</div>
+      </section>
+      <!-- Section 4 -->
+      <section class="section" data-bg="love5.webp">
+        <div class="bg-image" style="background-image:url('love5.webp');"></div>
+        <div class="banner">Empathic Success</div>
+      </section>
+    </div>
+  </div>
+
+<script>
+// =========== GSAP & SCROLLTRIGGER ===========
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+// --- ScrollSmoother for premium feel ---
+const smoother = ScrollSmoother.create({
+  wrapper: '.smooth-wrapper',
+  content: '.smooth-content',
+  smooth: 1.5,        // smoothness (seconds)
+  effects: true,
+  normalizeScroll: true,
+});
+// --- Snap to section ---
+gsap.utils.toArray('.section').forEach((section, i) => {
+  ScrollTrigger.create({
+    trigger: section,
+    start: "top top",
+    end: "bottom top",
+    snap: {
+      snapTo: 1,      // snap to next section
+      duration: {min:0.5,max:1.2},
+      inertia: false,
+      delay: 0.05,
+      ease: "power3.out"
+    },
+  });
+});
+
+// =========== ENTRY ANIMATIONS OF SECTIONS ==========
+gsap.utils.toArray('.section').forEach((section, idx) => {
+  let banner = section.querySelector('.banner');
+  let bg = section.querySelector('.bg-image');
+  // Banner text intro (fade-in + y)
+  ScrollTrigger.create({
+    trigger: section,
+    start: "top center",
+    onEnter: ()=>{
+      gsap.fromTo(banner, {opacity:0, y:50}, {opacity:1, y:0, duration:1, ease:"power2.out"});
+    }
+  });
+  // Background slight zoom-in effect on entry
+  ScrollTrigger.create({
+    trigger: section,
+    start: "top center",
+    onEnter: ()=>{
+      gsap.fromTo(bg, {scale:1.05}, {scale:1, duration:1.1, ease:"power2.out"});
+    }
+  });
+});
+
+// =========== PARALLAX EFFECT ON MOUSE MOVE ==========
+gsap.utils.toArray('.section').forEach((section, idx) => {
+  let bg = section.querySelector('.bg-image');
+  let banner = section.querySelector('.banner');
+  section.addEventListener('mousemove', e => {
+    let rect = section.getBoundingClientRect();
+    // Mouse pos normalized (-1 to 1)
+    let x = (e.clientX - rect.left) / rect.width - 0.5;
+    let y = (e.clientY - rect.top) / rect.height - 0.5;
+    // Parallax effect: slower for bg, faster for banner
+    gsap.to(bg, {
+      x: x*window.innerWidth*0.02,
+      y: y*window.innerHeight*0.02,
+      duration: 0.7,
+      overwrite: true
+    });
+    gsap.to(banner, {
+      x: x*window.innerWidth*0.05,
+      y: y*window.innerHeight*0.05,
+      duration: 0.45,
+      overwrite: true
+    });
+  });
+  section.addEventListener('mouseleave',()=>{
+    gsap.to(bg, {x:0, y:0, duration: 1});
+    gsap.to(banner, {x:0, y:0, duration: 0.7});
+  });
+});
+
+// =========== REVERSE PARALLAX ON BG (snap/tape effect) ==========
+// Reverse scroll: background moves opposite while content moves normally
+gsap.utils.toArray('.section').forEach((section, idx) => {
+  let bg = section.querySelector('.bg-image');
+  // Animation on scroll: when section activates, animate bg upward while tape scroll downward
+  ScrollTrigger.create({
+    trigger: section,
+    start: "top center",
+    end: "bottom center",
+    scrub: true,
+    onUpdate: self => {
+      // Theoretically self.progress [0-1]: 0-top, 1-bottom
+      let offset = (1-self.progress) * 32; // reverse offset parallax
+      gsap.to(bg, {y: offset, duration:0.3, overwrite:true});
+    }
+  });
+});
+</script>
+</body>
+</html>
