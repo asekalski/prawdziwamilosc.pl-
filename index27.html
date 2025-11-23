@@ -3,36 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prawdziwa Miłość - Parallax Full Section</title>
+  <title>Prawdziwa Miłość – Sekcja na sekcję</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
   <style>
     html, body { height: 100%; margin: 0; padding: 0; overflow-x: hidden; }
     body { font-family: 'Georgia', serif; background: #000; }
-    .section { height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; }
-    .bg-wrap { position: absolute; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1; }
-    .background {
-      position: absolute; width: 100vw; height: 100vh; top: 0; left: 0;
-      background-size: cover; background-position: center center; background-repeat: no-repeat;
-      transform: translateY(0) scale(1); will-change: transform, background-position;
-    }
+    .section { height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; position: absolute; top:0; left:0; overflow: hidden; opacity: 0; pointer-events: none; z-index: 0; }
+    .section.active { opacity: 1; pointer-events: auto; z-index: 10; }
+    .bg-wrap { position: absolute; inset: 0; width: 100vw; height: 100vh; z-index: 1; }
+    .background { position: absolute; width: 100vw; height: 100vh; top: 0; left: 0; background-size: cover; background-position: center; background-repeat: no-repeat; }
     .b-0 { background-image: url('pink_sky.jpg'); }
     .b-1 { background-image: url('venus2.jpg'); }
     .b-2 { background-image: url('pink_sky2.jpg'); }
     .b-3 { background-image: url('love5.png'); }
-    .content {
-      position: relative; z-index: 2; text-align: center; color: white; padding: 40px;
-      background: rgba(0, 0, 0, 0.4); border-radius: 20px; max-width: 800px;
-      will-change: transform; box-shadow: 0 6px 58px 5px rgba(30,30,60,0.36);
-      transition: transform 0.08s;
-    }
-    .content h1 { font-size: 4rem; margin-bottom: 20px; text-shadow: 2px 2px 20px rgba(0,0,0,.8); line-height: 1.2; }
-    .content p { font-size: 1.5rem; text-shadow: 1px 1px 10px rgba(0,0,0,.8); line-height: 1.6; }
-    @media (max-width: 768px) { .content h1 { font-size: 2.5rem; } .content p { font-size: 1.2rem; } }
+    .content { position: relative; z-index: 2; text-align: center; color: white; padding: 40px; background: rgba(0,0,0,0.4); border-radius: 20px; max-width: 800px; will-change: transform; box-shadow:0 6px 58px 5px rgba(30,30,60,0.36); }
+    .content h1 { font-size: 4rem; margin-bottom: 20px; text-shadow:2px 2px 20px rgba(0,0,0,.8); line-height:1.2; }
+    .content p { font-size: 1.5rem; text-shadow:1px 1px 10px rgba(0,0,0,.8); line-height:1.6; }
+    @media (max-width: 768px){.content h1{font-size:2.5rem;}.content p{font-size:1.2rem;}}
   </style>
 </head>
 <body>
-  <div class="section">
+  <div class="section active">
     <div class="bg-wrap"><div class="background b-0"></div></div>
     <div class="content"><h1>Prawdziwa Miłość</h1><p>To uczucie, które przekracza czas i przestrzeń</p></div>
   </div>
@@ -53,44 +45,47 @@ const sections = gsap.utils.toArray('.section');
 const bgs = gsap.utils.toArray('.background');
 const contents = gsap.utils.toArray('.content');
 let current = 0;
-let isScrolling = false;
+let isAnimating = false;
 
-function scrollToSection(newIdx, direction) {
-  if(isScrolling || newIdx < 0 || newIdx >= sections.length || newIdx === current) return;
-  isScrolling = true;
-  const fromBg = bgs[current];
-  const toBg = bgs[newIdx];
-  const fromContent = contents[current];
-  const toContent = contents[newIdx];
-  gsap.set(toBg, { yPercent: -100 });
-  gsap.set(toContent, { yPercent: -100 });
-  // animate current out downward, new in from top
-  gsap.to(fromBg, { yPercent: 100*direction, duration: 1.15, ease: "power4.inOut" });
-  gsap.to(toBg, {
-    yPercent: 0, duration: 1.15, ease: "power4.inOut",
+function showSection(toIdx, direction) {
+  if (isAnimating || toIdx === current || toIdx < 0 || toIdx >= sections.length) return;
+  isAnimating = true;
+  const fromSec = sections[current];
+  const toSec = sections[toIdx];
+  gsap.set(toSec, {yPercent: -100});
+  toSec.classList.add('active');
+  gsap.to(toSec, {
+    yPercent: 0,
+    opacity: 1,
+    duration: 1.2,
+    ease: 'power4.inOut',
     onStart() {
-      gsap.to(fromContent, { yPercent: 100*direction, duration: 1.15, ease: "power4.inOut" });
-      gsap.to(toContent, { yPercent: 0, duration: 1.15, ease: "power4.inOut" });
-      gsap.to(window, { scrollTo: { y: sections[newIdx], autoKill:false }, duration: 1.15, ease: "power4.inOut" });
+      // Snap scroll (invisible but helps mobile addressbar/scroll restoration)
+      gsap.to(window, {scrollTo: {y: 0}, duration: 0.6, autoKill: false});
     },
-    onComplete() { current = newIdx; isScrolling = false; runZoom(newIdx); resetBgAfter(fromBg,fromContent); }
+    onComplete() {
+      fromSec.classList.remove('active');
+      gsap.set(fromSec, {opacity: 0, yPercent: 0});
+      isAnimating = false;
+      current = toIdx;
+      runZoom(toIdx);
+    }
   });
 }
-function resetBgAfter(bg,ct) { setTimeout(()=>{gsap.set(bg,{yPercent:0});gsap.set(ct,{yPercent:0});},1200); }
-window.addEventListener('wheel', e => {
-  if(isScrolling) return;
+window.addEventListener('wheel', function(e) {
+  if(isAnimating) return;
   let dir = e.deltaY > 50 ? 1 : (e.deltaY < -50 ? -1 : 0);
-  if(dir === 1 && current < sections.length-1) { scrollToSection(current+1, 1); e.preventDefault(); }
-  if(dir === -1 && current > 0) { scrollToSection(current-1, -1); e.preventDefault(); }
+  if(dir === 1 && current < sections.length-1) { showSection(current+1, 1); e.preventDefault(); }
+  if(dir === -1 && current > 0) { showSection(current-1, -1); e.preventDefault(); }
 },{passive:false});
-window.addEventListener('keydown',e=>{
-  if(isScrolling) return;
-  if((e.key=="ArrowDown"||e.key=="PageDown")&&current<sections.length-1) { scrollToSection(current+1,1); e.preventDefault(); }
-  if((e.key=="ArrowUp"||e.key=="PageUp")&&current>0) { scrollToSection(current-1,-1); e.preventDefault(); }
+window.addEventListener('keydown',function(e){
+  if(isAnimating) return;
+  if((e.key=="ArrowDown"||e.key=="PageDown")&&current<sections.length-1) { showSection(current+1,1); e.preventDefault(); }
+  if((e.key=="ArrowUp"||e.key=="PageUp")&&current>0) { showSection(current-1,-1); e.preventDefault(); }
 });
-function runZoom(idx) { bgs.forEach((bg,i)=>{ if(i!==idx) gsap.set(bg,{scale:1}); }); gsap.to(bgs[idx], {scale:1.13,duration:14,ease:'none'}); }
+function runZoom(idx) { bgs.forEach((bg,i)=>{ if(i!==idx) gsap.set(bg,{scale:1}); }); gsap.to(bgs[idx], {scale:1.13,duration:13,ease:'none'}); }
 runZoom(0);
-// Universal parallax mouse for all sections
+// Parallax mouse effect for all sections
 sections.forEach((section, idx) => {
   const bg = bgs[idx];
   const content = contents[idx];
@@ -98,7 +93,6 @@ sections.forEach((section, idx) => {
     let rect = section.getBoundingClientRect();
     let x = (e.clientX - rect.width/2) / rect.width;
     let y = (e.clientY - rect.height/2) / rect.height;
-    // bg - wolniej, odwrotnie; content - szybciej, w stronę ruchu
     gsap.to(bg, {backgroundPosition: `${50 - x*12}% ${50 - y*12}%`, duration: 0.6, overwrite: true});
     gsap.to(content, { x: x*32, y: y*24, duration: 0.33, overwrite: true });
   });
@@ -111,10 +105,10 @@ let startY=null;
 window.addEventListener('touchstart',e=>{if(e.touches.length)startY=e.touches[0].clientY;});
 window.addEventListener('touchend',e=>{startY=null;});
 window.addEventListener('touchmove',e=>{
-  if(isScrolling||startY===null)return;
+  if(isAnimating||startY===null)return;
   let dY=e.touches[0].clientY-startY;
-  if(dY<-60&&current<sections.length-1){scrollToSection(current+1,1);startY=null;}
-  if(dY>60&&current>0){scrollToSection(current-1,-1);startY=null;}
+  if(dY<-60&&current<sections.length-1){showSection(current+1,1);startY=null;}
+  if(dY>60&&current>0){showSection(current-1,-1);startY=null;}
 },{passive:false});
 </script>
 </body>
