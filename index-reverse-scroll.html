@@ -66,6 +66,11 @@
             transform: translateY(0);
         }
 
+        .content.exit {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+
         .content h1 {
             font-size: clamp(3rem, 8vw, 6rem);
             font-weight: 300;
@@ -74,21 +79,21 @@
             line-height: 1.2;
         }
 
-        /* Kolory dla każdej sekcji */
+        /* Grafiki z pełnymi URLami */
         .section-1 .background {
-            background-image: url('venus2.webp');
+            background-image: url('https://raw.githubusercontent.com/asekalski/prawdziwamilosc.pl-/main/venus2.webp');
         }
 
         .section-2 .background {
-            background-image: url('pink_sky.webp');
+            background-image: url('https://raw.githubusercontent.com/asekalski/prawdziwamilosc.pl-/main/pink_sky.webp');
         }
 
         .section-3 .background {
-            background-image: url('love4.webp');
+            background-image: url('https://raw.githubusercontent.com/asekalski/prawdziwamilosc.pl-/main/love4.webp');
         }
 
         .section-4 .background {
-            background-image: url('love5.webp');
+            background-image: url('https://raw.githubusercontent.com/asekalski/prawdziwamilosc.pl-/main/love5.webp');
         }
 
         /* Overlay dla lepszej czytelności */
@@ -239,20 +244,24 @@
                     
                     // Pokaż content gdy sekcja jest w 30% widoczna
                     if (sectionProgress > 0.3) {
+                        content.classList.remove('exit');
                         content.classList.add('visible');
                     } else {
                         content.classList.remove('visible');
+                        content.classList.remove('exit');
                     }
                     
                 } else if (index < sectionIndex) {
-                    // Poprzednie sekcje - w pełni widoczne
+                    // Poprzednie sekcje - tekst odjeżdża do góry
                     background.style.transform = 'translateY(0%)';
-                    content.classList.add('visible');
+                    content.classList.remove('visible');
+                    content.classList.add('exit');
                     
                 } else {
                     // Następne sekcje - ukryte poniżej
                     background.style.transform = 'translateY(100%)';
                     content.classList.remove('visible');
+                    content.classList.remove('exit');
                 }
             });
             
