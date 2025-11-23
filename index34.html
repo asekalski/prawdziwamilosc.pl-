@@ -157,17 +157,17 @@ function goToSection(idx, dir) {
   tl.to(tape, { y: toY, duration: 1.6 }, 0);
 
   // STARE tło – efekt taśmy:
-  // scroll w dół (dir>0): schodzi w dół (0 -> +vh)
-  // scroll w górę (dir<0): ucieka w górę (0 -> -vh)
+  // scroll w dół (dir>0): jedzie w dół (0 -> +vh)
+  // scroll w górę (dir<0): jedzie w górę (0 -> -vh)
   tl.to(bgFrom, {
     y: dir > 0 ? vh : -vh,
     duration: 1.6,
     ease: 'power2.inOut'
   }, 0);
 
-  // NOWE tło – wjeżdża Z GÓRY przy scrollu w dół:
-  // scroll w dół: start -vh -> 0
-  // scroll w górę: start +vh -> 0
+  // NOWE tło:
+  // scroll w dół: wjeżdża z GÓRY (-vh -> 0)
+  // scroll w górę: wjeżdża z DOŁU (+vh -> 0)
   tl.fromTo(bgTo,
     { y: dir > 0 ? -vh : vh },
     { y: 0, duration: 1.6, ease: 'power2.inOut' },
