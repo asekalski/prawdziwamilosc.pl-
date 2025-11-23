@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Final GSAP Experience</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      min-height: 100vh;
+      overflow: hidden;
+      background: #0b0c1e;
+    }
+    body {
+      font-family: "Montserrat", "Georgia", serif;
+    }
+    #sliderWrap {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #0b0c1e;
+    }
+    #sectionsTape {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      will-change: transform;
+    }
+    .section {
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      left: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .bg-image {
+      position: absolute;
+      /* ZMINIMALIZOWANE POWIĘKSZENIE:
+         110vh to tylko 10% zapasu. Wystarczy na subtelną paralaksę.
+         Obrazek jest prawie taki sam jak ekran. */
+      height: 110vh; 
+      width: 100vw;
+      /* Centrowanie: (110 - 100) / 2 = 5 */
+      top: -5vh; 
+      left: 0;
+      background-size: cover;
+      background-position: center;
+      z-index: 1;
+      will-change: transform;
+    }
+    .banner {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-shadow: 0 6px 28px #1a143abb;
+      background: rgba(16, 13, 30, 0.6);
+      padding: 48px 72px;
+      border-radius: 28px;
+      box-shadow: 0 7px 55px 9px rgba(20, 10, 40, 0.32);
+      pointer-events: none;
+      opacity: 1;
+      will-change: transform;
+    }
+    @media (max-width: 760px) {
+      .banner {
+        font-size: 1.6rem;
+        padding: 28px 10vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="sliderWrap">
+    <div id="sectionsTape">
+      <div class="section">
+        <div class="bg-image" style="background-image:url('pink_sky.webp')"></div>
+        <div class="banner">Dream Activation</div>
+      </div>
+      <div class="section">
+        <div class="bg-image" style="background-image:url('venus2.webp')"></div>
+        <div class="banner">Higher Consciousness</div>
+      </div>
+      <div class="section">
+        <div class="bg-image" style="background-image:url('love4.webp')"></div>
+        <div class="banner">Aligned Creation</div>
+      </div>
+      <div class="section">
+        <div class="bg-image" style="background-image:url('love5.webp')"></div>
+        <div class="banner">Empathic Success</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const sections = document.querySelectorAll('.section');
+const tape     = document.getElementById('sectionsTape');
+const bgs      = document.querySelectorAll('.bg-image');
+const banners  = document.querySelectorAll('.banner');
+
+let current     = 0;
+let isAnimating = false;
+const numSections = sections.length;
+let vh = 0;
+
+// --- PARALAKSA ---
+function updateParallax() {
+  const tapeY = gsap.getProperty(tape, 'y');
+  bgs.forEach((bg, i) => {
+    // Obliczamy pozycję. Ponieważ mamy mały zapas (110vh),
+    // współczynnik musi być bardzo mały (-0.1), żeby nie pokazać dziur.
+    const sectionRelativeY = tapeY - (i * vh);
+    gsap.set(bg, { y: sectionRelativeY * -0.1 });
+  });
+}
+
+function layout() {
+  vh = window.innerHeight || document.documentElement.clientHeight;
+  tape.style.height = (vh * numSections) + 'px';
+  
+  sections.forEach((sec, i) => {
+    sec.style.height = vh + 'px';
+    // Utrzymujemy układ "do góry" (ujemny top), bo to naprawiło kierunek tła
+    sec.style.top    = (-i * vh) + 'px';
+    sec.style.left   = 0;
+    sec.style.zIndex = numSections - i;
+  });
+  
+  // Startowa pozycja
+  gsap.set(tape, { y: current * vh });
+  updateParallax();
+}
+
+layout();
+window.addEventListener('resize', () => {
+  layout();
+  updateParallax();
+});
+
+function targetY(idx) {
+  return idx * vh;
+}
+
+function goToSection(idx, dir) {
+  if (isAnimating || idx === current || idx < 0 || idx >= numSections) return;
+  isAnimating = true;
+  
+  const fromIdx = current;
+  const toY     = targetY(idx);
+  
+  banners.forEach((b, i) => {
+    if (i !== idx && i !== fromIdx) {
+      gsap.set(b, { opacity: 0 });
+    }
+  });
+
+  // Animacja taśmy (przesuwa całe sekcje)
+  gsap.to(tape, {
+    y: toY,
+    duration: 1.6,
+    ease: 'power2.inOut',
+    onUpdate: updateParallax, 
+    onComplete: () => {
+      isAnimating = false;
+      current = idx;
+      updateParallax(); 
+    }
+  });
+
+  // --- POPRAWIONA ANIMACJA TEKSTÓW ---
+  
+  // 1. STARY TEKST (ten co znika)
+  gsap.to(banners[fromIdx], { 
+    opacity: 0, 
+    // Jeśli idziemy DALEJ (dir=1): Stary tekst leci do GÓRY (-100).
+    // Jeśli COFAMY (dir=-1): Stary tekst leci do DOŁU (100).
+    y: dir > 0 ? -100 : 100, 
+    duration: 0.6, 
+    ease: 'power2.in' 
+  });
+  
+  // 2. NOWY TEKST (ten co wchodzi)
+  gsap.fromTo(banners[idx], { 
+    opacity: 0, 
+    // Jeśli idziemy DALEJ (dir=1): Nowy tekst startuje z DOŁU (100).
+    // Jeśli COFAMY (dir=-1): Nowy tekst startuje z GÓRY (-100).
+    y: dir > 0 ? 100 : -100 
+  }, { 
+    opacity: 1, 
+    y: 0, 
+    duration: 0.8, 
+    ease: 'power2.out' 
+  });
+}
+
+// --- OBSŁUGA ZDARZEŃ ---
+window.addEventListener('wheel', e => {
+  if (isAnimating) return;
+  const dir = e.deltaY > 50 ? 1 : e.deltaY < -50 ? -1 : 0;
+  if (dir === 1 && current < numSections - 1) { goToSection(current + 1, 1);  e.preventDefault(); }
+  if (dir === -1 && current > 0)             { goToSection(current - 1, -1); e.preventDefault(); }
+}, { passive: false });
+
+window.addEventListener('keydown', e => {
+  if (isAnimating) return;
+  if ((e.key === 'ArrowDown' || e.key === 'PageDown') && current < numSections - 1) {
+    goToSection(current + 1, 1); e.preventDefault();
+  }
+  if ((e.key === 'ArrowUp' || e.key === 'PageUp') && current > 0) {
+    goToSection(current - 1, -1); e.preventDefault();
+  }
+});
+
+let touchStartY = null;
+window.addEventListener('touchstart', e => {
+  if (e.touches.length) touchStartY = e.touches[0].clientY;
+});
+window.addEventListener('touchend', () => { touchStartY = null; });
+window.addEventListener('touchmove', e => {
+  if (isAnimating || touchStartY === null) return;
+  const dY = e.touches[0].clientY - touchStartY;
+  if (dY < -60 && current < numSections - 1) { goToSection(current + 1, 1);  touchStartY = null; }
+  if (dY >  60 && current > 0)              { goToSection(current - 1, -1); touchStartY = null; }
+}, { passive: false });
+
+// --- EXTRAS ---
+(function animateEntryFirst() {
+  // Startowy tekst wjeżdża od dołu (y: 100 -> y: 0)
+  gsap.fromTo(banners[0], { opacity: 0, y: 100 }, { opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power2.out' });
+})();
+
+sections.forEach((section, idx) => {
+  const bg     = bgs[idx];
+  const banner = banners[idx];
+
+  section.addEventListener('mousemove', e => {
+    if (isAnimating) return;
+    const rect = section.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top)  / rect.height - 0.5;
+
+    gsap.to(bg, {
+      x: x * window.innerWidth * 0.02,
+      y: y * vh * 0.02, 
+      duration: 0.6,
+      overwrite: 'auto'
+    });
+    gsap.to(banner, {
+      x: x * window.innerWidth * 0.055,
+      y: y * vh * 0.055,
+      duration: 0.35,
+      overwrite: 'auto'
+    });
+  });
+
+  section.addEventListener('mouseleave', () => {
+    if(isAnimating) return;
+    gsap.to(bg,     { x: 0, y: 0, duration: 0.75 });
+    gsap.to(banner, { x: 0, y: 0, duration: 0.5 });
+  });
+});
+
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    if (isAnimating) return;
+    const gx = (e.gamma || 0) / 45;
+    const gy = (e.beta  || 0) / 90;
+    const bg     = bgs[current];
+    const banner = banners[current];
+    gsap.to(bg, {
+      x: gx * window.innerWidth * 0.03,
+      y: gy * vh * 0.03,
+      duration: 0.8,
+      overwrite: 'auto'
+    });
+    gsap.to(banner, {
+      x: gx * window.innerWidth * 0.07,
+      y: gy * vh * 0.07,
+      duration: 0.55,
+      overwrite: 'auto'
+    });
+  });
+}
+</script>
+</body>
+</html>
