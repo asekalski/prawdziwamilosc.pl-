@@ -147,10 +147,13 @@ function targetY(idx) {
 function goToSection(idx, dir) {
   if (isAnimating || idx === current || idx < 0 || idx >= numSections) return;
   isAnimating = true;
-  
+
+  // Włącz blokadę animacji parallax/scroll
+  sections.forEach(sec => sec.style.pointerEvents = 'none');
+
   const fromIdx = current;
   const toY     = targetY(idx);
-  
+
   banners.forEach((b, i) => {
     if (i !== idx && i !== fromIdx) {
       gsap.set(b, { opacity: 0, y: 0 });
@@ -166,6 +169,8 @@ function goToSection(idx, dir) {
       isAnimating = false;
       current = idx;
       updateParallax();
+      // Wyłącz blokadę animacji
+      sections.forEach(sec => sec.style.pointerEvents = 'auto');
     }
   });
 
@@ -183,7 +188,7 @@ function goToSection(idx, dir) {
 
   // --- NOWY BANER WJEŻDŻA OD DOŁU ---
   gsap.set(banners[idx], { clearProps: "transform,opacity" });
-  gsap.set(banners[idx], { y: 100, opacity: 0 }); 
+  gsap.set(banners[idx], { y: 100, opacity: 0 });
   gsap.to(banners[idx], {
     y: 0,
     opacity: 1,
@@ -192,7 +197,6 @@ function goToSection(idx, dir) {
     overwrite: 'auto'
   });
 }
-
 // --- OBSŁUGA ZDARZEŃ ---
 window.addEventListener('wheel', e => {
   if (isAnimating) return;
