@@ -20,11 +20,8 @@
         }
         .section {
             position: relative;
-            width: 100%;
+            width: 100vw;
             height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             overflow: hidden;
         }
         .background {
@@ -37,6 +34,7 @@
             background-position: center;
             z-index: 1;
             will-change: transform;
+            pointer-events: none; /* disables interaction for bg */
         }
         .section:nth-child(1) .background {
             background-image: url('venus2.webp');
@@ -51,7 +49,10 @@
             background-image: url('love5.webp');
         }
         .banner {
-            position: relative;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
             z-index: 2;
             text-align: center;
             color: white;
@@ -61,6 +62,7 @@
             border-radius: 20px;
             max-width: 800px;
             will-change: transform;
+            pointer-events: auto;
         }
         .banner h1 {
             font-size: 3.5rem;
@@ -120,17 +122,14 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
         const sections = gsap.utils.toArray('.section');
-        // Nowy backward parallax kierunek: background wjeżdża od góry (przy scrollowaniu w dół tło idzie do góry)
-        sections.forEach((section, i) => {
+        sections.forEach((section) => {
             const bg = section.querySelector('.background');
             const banner = section.querySelector('.banner');
-            // Zmieniony kierunek: tło przesuwa się z +100 do -100
+            // BACKGROUND: Reverse parallax, wjeżdża od góry (z -120% do 0 po osi Y)
             gsap.fromTo(bg,
+                { yPercent: -120 },
                 {
-                    y: 100
-                },
-                {
-                    y: -100,
+                    yPercent: 0,
                     ease: 'none',
                     scrollTrigger: {
                         trigger: section,
@@ -138,24 +137,18 @@
                         end: 'bottom top',
                         scrub: true
                     }
-                }
+                }   
             );
-            // Animacja banera bez zmian
+            // BANNER: Wjeżdża od dołu (z +120% do 0 po osi Y)
             gsap.fromTo(banner,
-                {
-                    opacity: 0,
-                    y: 50
-                },
-                {
-                    opacity: 1,
-                    y: 0,
-                    ease: 'power2.out',
-                    scrollTrigger: {
-                        trigger: section,
-                        start: 'top center',
-                        end: 'center center',
-                        scrub: 1
-                    }
+                { yPercent: 120, opacity: 0 },
+                { yPercent: 0, opacity: 1, ease: 'power2.out',
+                  scrollTrigger: {
+                    trigger: section,
+                    start: 'top center',
+                    end: 'center center',
+                    scrub: 1
+                  }
                 }
             );
         });
@@ -166,14 +159,6 @@
                 duration: 0.8,
                 ease: 'power2.inOut',
                 delay: 0
-            }
-        });
-        gsap.to(window, {
-            scrollTrigger: {
-                trigger: 'body',
-                start: 'top top',
-                end: 'bottom bottom',
-                scrub: 0.5
             }
         });
     </script>
