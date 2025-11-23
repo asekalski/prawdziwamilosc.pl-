@@ -179,6 +179,7 @@ function goToSection(idx, dir) {
   });
 
   // --- NOWY BANER WJEŻDŻA OD DOŁU ---
+  banners[idx].style.transform = 'none'; // resetuj transformację
   gsap.set(banners[idx], { y: 100, opacity: 0 }); // reset pozycji przed animacją
   gsap.to(banners[idx], {
     y: 0,
