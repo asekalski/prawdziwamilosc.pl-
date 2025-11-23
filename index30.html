@@ -120,6 +120,11 @@ function layout() {
     sec.style.top    = (i * vh) + 'px';
   });
   gsap.set(tape, { y: -current * vh });
+  
+  // Reset pozycji backgrounds przy resize
+  bgs.forEach(bg => {
+    gsap.set(bg, { y: 0 });
+  });
 }
 layout();
 window.addEventListener('resize', layout);
@@ -132,59 +137,106 @@ function goToSection(idx, dir) {
   if (isAnimating || idx === current || idx < 0 || idx >= numSections) return;
   isAnimating = true;
 
+  const fromIdx = current;
   const fromY = targetY(current);
   const toY   = targetY(idx);
+  const distance = toY - fromY;
 
+  // Ustaw widoczność bannerów - ukryj stary, pokaż nowy
   banners.forEach((b, i) => {
-    gsap.set(b, { opacity: i === idx ? 1 : 0, y: i === idx ? 60 : 0 });
-  });
-
-  const tl = gsap.timeline({
-    defaults: { duration: 1, ease: 'power3.out' },
-    onComplete: () => {
-      isAnimating = false;
-      current = idx;
-      gsap.set(tape, { y: toY }); // snap
+    if (i !== idx && i !== fromIdx) {
+      gsap.set(b, { opacity: 0 });
     }
   });
 
-  // taśma
-  tl.to(tape, { y: toY }, 0);
+  // Timeline z dłuższym czasem i płynniejszym easingiem
+  const tl = gsap.timeline({
+    defaults: { ease: 'power2.inOut' },
+    onComplete: () => {
+      isAnimating = false;
+      current = idx;
+    }
+  });
 
-  // reverse background – globalny ruch przeciwny do taśmy
+  // 1. Płynne przesunięcie taśmy - wydłużony czas dla płynności
+  tl.to(tape, { 
+    y: toY, 
+    duration: 1.8,
+    ease: 'power2.inOut'
+  }, 0);
+
+  // 2. Reverse sliding background - background porusza się w przeciwną stronę
+  // Każdy background przesunie się proporcjonalnie w przeciwnym kierunku
+  bgs.forEach((bg, i) => {
+    // Tylko backgroundy które są widoczne podczas animacji
+    if (i >= Math.min(fromIdx, idx) && i <= Math.max(fromIdx, idx)) {
+      tl.fromTo(bg, 
+        { y: 0 },
+        { 
+          y: distance * 0.6, // 60% ruchu w przeciwnym kierunku
+          duration: 1.8,
+          ease: 'power2.inOut'
+        }, 
+        0
+      );
+    }
+  });
+
+  // 3. Fade out starego bannera
+  tl.to(banners[fromIdx], {
+    opacity: 0,
+    y: dir > 0 ? -40 : 40,
+    duration: 0.6,
+    ease: 'power2.in'
+  }, 0);
+
+  // 4. Fade in nowego bannera
+  tl.fromTo(banners[idx],
+    { opacity: 0, y: dir > 0 ? 60 : -60 },
+    {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power2.out'
+    }, 
+    0.4
+  );
+
+  // 5. Reset pozycji backgroundów po animacji
   tl.to(bgs, {
-    y: (i, el) => (toY - fromY) * -0.4,
-    ease: 'power2.out'
-  }, 0).to(bgs, {
     y: 0,
-    duration: 0.7,
-    ease: 'power2.out'
-  }, 0.6);
-
-  // entry bannera
-  tl.to(banners[idx], {
-    opacity: 1,
-    y: 0,
-    duration: 0.7,
-    ease: 'power2.out'
-  }, 0.1);
+    duration: 0.8,
+    ease: 'power2.out',
+    onComplete: () => {
+      // Hard reset dla pewności
+      bgs.forEach(bg => gsap.set(bg, { y: 0 }));
+    }
+  }, 1.2);
 }
 
 // sterowanie: scroll / klawiatura
 window.addEventListener('wheel', e => {
   if (isAnimating) return;
   const dir = e.deltaY > 50 ? 1 : e.deltaY < -50 ? -1 : 0;
-  if (dir === 1 && current < numSections - 1) { goToSection(current + 1, 1);  e.preventDefault(); }
-  if (dir === -1 && current > 0)             { goToSection(current - 1, -1); e.preventDefault(); }
+  if (dir === 1 && current < numSections - 1) { 
+    goToSection(current + 1, 1);  
+    e.preventDefault(); 
+  }
+  if (dir === -1 && current > 0) { 
+    goToSection(current - 1, -1); 
+    e.preventDefault(); 
+  }
 }, { passive: false });
 
 window.addEventListener('keydown', e => {
   if (isAnimating) return;
   if ((e.key === 'ArrowDown' || e.key === 'PageDown') && current < numSections - 1) {
-    goToSection(current + 1, 1); e.preventDefault();
+    goToSection(current + 1, 1); 
+    e.preventDefault();
   }
   if ((e.key === 'ArrowUp' || e.key === 'PageUp') && current > 0) {
-    goToSection(current - 1, -1); e.preventDefault();
+    goToSection(current - 1, -1); 
+    e.preventDefault();
   }
 });
 
@@ -195,19 +247,38 @@ window.addEventListener('touchstart', e => {
 });
 window.addEventListener('touchend', () => {
   touchStartY = null;
-  setTimeout(() => gsap.set(tape, { y: targetY(current) }), 120);
 });
 window.addEventListener('touchmove', e => {
   if (isAnimating || touchStartY === null) return;
   const dY = e.touches[0].clientY - touchStartY;
-  if (dY < -60 && current < numSections - 1) { goToSection(current + 1, 1);  touchStartY = null; }
-  if (dY >  60 && current > 0)              { goToSection(current - 1, -1); touchStartY = null; }
+  if (dY < -60 && current < numSections - 1) { 
+    goToSection(current + 1, 1);  
+    touchStartY = null; 
+  }
+  if (dY >  60 && current > 0) { 
+    goToSection(current - 1, -1); 
+    touchStartY = null; 
+  }
 }, { passive: false });
 
 // wejście pierwszej sekcji
 (function animateEntryFirst() {
-  gsap.set(bgs[0], { scale: 1.05 });
-  gsap.to(bgs[0], { scale: 1, duration: 1, ease: 'power2.out' });
+  gsap.set(bgs[0], { scale: 1.08 });
+  gsap.to(bgs[0], { 
+    scale: 1, 
+    duration: 1.5, 
+    ease: 'power2.out' 
+  });
+  gsap.fromTo(banners[0],
+    { opacity: 0, y: 40 },
+    { 
+      opacity: 1, 
+      y: 0, 
+      duration: 1, 
+      delay: 0.3,
+      ease: 'power2.out' 
+    }
+  );
 })();
 
 // parallax myszką
@@ -216,6 +287,7 @@ sections.forEach((section, idx) => {
   const banner = banners[idx];
 
   section.addEventListener('mousemove', e => {
+    if (isAnimating) return;
     const rect = section.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top)  / rect.height - 0.5;
@@ -223,13 +295,13 @@ sections.forEach((section, idx) => {
       x: x * window.innerWidth * 0.02,
       y: y * vh * 0.02,
       duration: 0.6,
-      overwrite: true
+      overwrite: 'auto'
     });
     gsap.to(banner, {
       x: x * window.innerWidth * 0.055,
       y: y * vh * 0.055,
       duration: 0.35,
-      overwrite: true
+      overwrite: 'auto'
     });
   });
 
@@ -242,6 +314,7 @@ sections.forEach((section, idx) => {
 // gyro parallax – przechylanie telefonu
 if (window.DeviceOrientationEvent) {
   window.addEventListener('deviceorientation', e => {
+    if (isAnimating) return;
     const gx = (e.gamma || 0) / 45;
     const gy = (e.beta  || 0) / 90;
     const bg     = bgs[current];
@@ -250,13 +323,13 @@ if (window.DeviceOrientationEvent) {
       x: gx * window.innerWidth * 0.03,
       y: gy * vh * 0.03,
       duration: 0.8,
-      overwrite: true
+      overwrite: 'auto'
     });
     gsap.to(banner, {
       x: gx * window.innerWidth * 0.07,
       y: gy * vh * 0.07,
       duration: 0.55,
-      overwrite: true
+      overwrite: 'auto'
     });
   });
 }
