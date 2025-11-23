@@ -141,11 +141,12 @@ function goToSection(idx, dir) {
     duration: 1.6,
     ease: 'power2.inOut',
     onUpdate: () => {
-      // Background przesuwa się w odwrotnym kierunku (z góry na dół)
+      // Background porusza się w odwrotnym kierunku (reverse: z góry na dół)
       const tapeY = gsap.getProperty(tape, 'y');
       bgs.forEach((bg, i) => {
+        // reverse: zawsze ujemny ruch na scroll w dół
         if (i === idx)
-          gsap.set(bg, { y: (tapeY + idx * vh) * 0.4 }); // reverse direction
+          gsap.set(bg, { y: -(tapeY + idx * vh) * 0.4 });
         else
           gsap.set(bg, { y: 0 });
       });
