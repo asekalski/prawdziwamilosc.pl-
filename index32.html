@@ -156,11 +156,11 @@ function goToSection(idx, dir) {
   // Taśma sekcji
   tl.to(tape, { y: toY, duration: 1.6 }, 0);
 
-  // STARE tło – odwrócony kierunek:
-  // scroll w dół: ucieka do góry (-2*vh)
-  // scroll w górę: ucieka w dół (2*vh)
+  // STARE tło:
+  // scroll w dół: zjeżdża w dół (0 -> 2*vh)
+  // scroll w górę: ucieka w górę (0 -> -2*vh)
   tl.to(bgFrom, {
-    y: dir > 0 ? -2 * vh : 2 * vh,
+    y: dir > 0 ? 2 * vh : -2 * vh,
     duration: 1.6,
     ease: 'power2.inOut'
   }, 0);
