@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Full Experience Scrolling</title>
-  <!-- GSAP, ScrollTrigger, ScrollSmoother CDN -->
+  <!-- GSAP, ScrollTrigger, GSAP ScrollSmoother CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/ScrollSmoother.min.js"></script>
@@ -13,7 +13,7 @@
       margin: 0;
       padding: 0;
       width: 100vw;
-      height: 100%;
+      min-height: 100vh;
       overflow-x: hidden;
       background: #0b0c1e;
     }
@@ -24,10 +24,12 @@
       position: relative;
       width: 100vw;
       min-height: 100vh;
+      overflow-x: hidden;
     }
     .smooth-content {
       width: 100vw;
       min-height: 100vh;
+      overflow: hidden;
     }
     .section {
       width: 100vw;
@@ -94,99 +96,95 @@
       </section>
     </div>
   </div>
-
 <script>
-// =========== GSAP & SCROLLTRIGGER ===========
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 // --- ScrollSmoother for premium feel ---
 const smoother = ScrollSmoother.create({
   wrapper: '.smooth-wrapper',
   content: '.smooth-content',
-  smooth: 1.5,        // smoothness (seconds)
+  smooth: 1.2,        // smoothness (seconds)
   effects: true,
   normalizeScroll: true,
 });
-// --- Snap to section ---
+// --- Snap to section (always align to full screen, only one section ever visible) ---
 gsap.utils.toArray('.section').forEach((section, i) => {
   ScrollTrigger.create({
     trigger: section,
-    start: "top top",
-    end: "bottom top",
+    start: 'top top',
+    end: 'bottom top',
+    pin: true,
+    pinSpacing: false,
     snap: {
-      snapTo: 1,      // snap to next section
-      duration: {min:0.5,max:1.2},
+      snapTo: 1,
+      duration: {min:0.6, max:1.1},
       inertia: false,
-      delay: 0.05,
-      ease: "power3.out"
+      delay: 0.02,
+      ease: 'power3.out'
     },
+    onEnter: () => smoother.scrollTo(section, true, 'power3.out'),
+    onEnterBack: () => smoother.scrollTo(section, true, 'power3.out'),
+    anticipatePin: 1
   });
 });
-
-// =========== ENTRY ANIMATIONS OF SECTIONS ==========
+// --- Entry animation ---
 gsap.utils.toArray('.section').forEach((section, idx) => {
   let banner = section.querySelector('.banner');
   let bg = section.querySelector('.bg-image');
   // Banner text intro (fade-in + y)
   ScrollTrigger.create({
     trigger: section,
-    start: "top center",
+    start: 'top center',
     onEnter: ()=>{
-      gsap.fromTo(banner, {opacity:0, y:50}, {opacity:1, y:0, duration:1, ease:"power2.out"});
+      gsap.fromTo(banner, {opacity:0, y:60}, {opacity:1, y:0, duration:0.8, ease:"power2.out"});
     }
   });
   // Background slight zoom-in effect on entry
   ScrollTrigger.create({
     trigger: section,
-    start: "top center",
+    start: 'top center',
     onEnter: ()=>{
-      gsap.fromTo(bg, {scale:1.05}, {scale:1, duration:1.1, ease:"power2.out"});
+      gsap.fromTo(bg, {scale:1.07}, {scale:1, duration:1, ease:"power2.out"});
     }
   });
 });
-
-// =========== PARALLAX EFFECT ON MOUSE MOVE ==========
+// --- Parallax effect on mouse move (banner & bg) ---
 gsap.utils.toArray('.section').forEach((section, idx) => {
   let bg = section.querySelector('.bg-image');
   let banner = section.querySelector('.banner');
   section.addEventListener('mousemove', e => {
     let rect = section.getBoundingClientRect();
-    // Mouse pos normalized (-1 to 1)
     let x = (e.clientX - rect.left) / rect.width - 0.5;
     let y = (e.clientY - rect.top) / rect.height - 0.5;
-    // Parallax effect: slower for bg, faster for banner
+    // Parallax: slower for bg, faster for banner
     gsap.to(bg, {
       x: x*window.innerWidth*0.02,
       y: y*window.innerHeight*0.02,
-      duration: 0.7,
+      duration: 0.6,
       overwrite: true
     });
     gsap.to(banner, {
-      x: x*window.innerWidth*0.05,
-      y: y*window.innerHeight*0.05,
-      duration: 0.45,
+      x: x*window.innerWidth*0.055,
+      y: y*window.innerHeight*0.055,
+      duration: 0.35,
       overwrite: true
     });
   });
   section.addEventListener('mouseleave',()=>{
-    gsap.to(bg, {x:0, y:0, duration: 1});
-    gsap.to(banner, {x:0, y:0, duration: 0.7});
+    gsap.to(bg, {x:0, y:0, duration: 0.75});
+    gsap.to(banner, {x:0, y:0, duration: 0.5});
   });
 });
-
-// =========== REVERSE PARALLAX ON BG (snap/tape effect) ==========
-// Reverse scroll: background moves opposite while content moves normally
+// --- Reverse parallax on BG (scroll) ---
 gsap.utils.toArray('.section').forEach((section, idx) => {
   let bg = section.querySelector('.bg-image');
-  // Animation on scroll: when section activates, animate bg upward while tape scroll downward
   ScrollTrigger.create({
     trigger: section,
-    start: "top center",
-    end: "bottom center",
+    start: 'top center',
+    end: 'bottom center',
     scrub: true,
     onUpdate: self => {
-      // Theoretically self.progress [0-1]: 0-top, 1-bottom
-      let offset = (1-self.progress) * 32; // reverse offset parallax
-      gsap.to(bg, {y: offset, duration:0.3, overwrite:true});
+      let offset = (1-self.progress) * 32;
+      gsap.to(bg, {y: offset, duration:0.32, overwrite:true});
     }
   });
 });
