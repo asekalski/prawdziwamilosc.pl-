@@ -107,6 +107,7 @@ let current     = 0;
 let isAnimating = false;
 const numSections = sections.length;
 let vh = 0;
+
 function layout() {
   vh = window.innerHeight || document.documentElement.clientHeight;
   tape.style.height = (vh * numSections) + 'px';
@@ -123,21 +124,26 @@ function layout() {
 }
 layout();
 window.addEventListener('resize', layout);
+
 function targetY(idx) {
   return -idx * vh;
 }
+
 function goToSection(idx, dir) {
   if (isAnimating || idx === current || idx < 0 || idx >= numSections) return;
   isAnimating = true;
   const fromIdx = current;
   const toY   = targetY(idx);
+
   banners.forEach((b, i) => {
     if (i !== idx && i !== fromIdx) {
       gsap.set(b, { opacity: 0 });
     }
   });
+
   let bgFrom = bgs[fromIdx];
-  let bgTo = bgs[idx];
+  let bgTo   = bgs[idx];
+
   const tl = gsap.timeline({
     defaults: { ease: 'power2.inOut' },
     onComplete: () => {
@@ -146,35 +152,47 @@ function goToSection(idx, dir) {
       bgs.forEach(bg => gsap.set(bg, { y: 0 }));
     }
   });
+
+  // Taśma sekcji
   tl.to(tape, { y: toY, duration: 1.6 }, 0);
-  
-  // === ZMODYFIKOWANY REVERSE PARALLAX ===
-  // Odwrócony kierunek dla bgFrom i bgTo
-   tl.to(bgFrom, {
-    // odwrócony kierunek dla wychodzącego tła
-    y: dir > 0 ? -vh : vh,
+
+  // Wychodzący background – w stronę przeciwną do nowego
+  tl.to(bgFrom, {
+    y: dir > 0 ?  2 * vh : -2 * vh,
     duration: 1.6,
     ease: 'power2.inOut'
   }, 0);
 
+  // NOWY background (reverse parallax):
+  // dir > 0 (scroll w dół): startuje wysoko nad viewportem (-2*vh) i zjeżdża w dół na 0
+  // dir < 0 (scroll w górę): startuje pod viewportem (2*vh) i wjeżdża w górę na 0
   tl.fromTo(bgTo,
-    // odwrócony kierunek dla wchodzącego tła (reverse parallax)
-    { y: dir > 0 ? vh : -vh },
-    { y: 0, duration: 1.6, ease: 'power2.inOut' },
+    { y: dir > 0 ? -2 * vh :  2 * vh },
+    { y: 0,        duration: 1.6, ease: 'power2.inOut' },
     0
   );
 
-  // =====================================
-  
-  tl.to(banners[fromIdx], { opacity: 0, y: dir > 0 ? -40 : 40, duration: 0.6, ease: 'power2.in' }, 0);
-  tl.fromTo(banners[idx], { opacity: 0, y: dir > 0 ? 60 : -60 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.4);
+  tl.to(banners[fromIdx], {
+    opacity: 0,
+    y: dir > 0 ? -40 : 40,
+    duration: 0.6,
+    ease: 'power2.in'
+  }, 0);
+
+  tl.fromTo(banners[idx],
+    { opacity: 0, y: dir > 0 ? 60 : -60 },
+    { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+    0.4
+  );
 }
+
 window.addEventListener('wheel', e => {
   if (isAnimating) return;
   const dir = e.deltaY > 50 ? 1 : e.deltaY < -50 ? -1 : 0;
   if (dir === 1 && current < numSections - 1) { goToSection(current + 1, 1);  e.preventDefault(); }
   if (dir === -1 && current > 0)             { goToSection(current - 1, -1); e.preventDefault(); }
 }, { passive: false });
+
 window.addEventListener('keydown', e => {
   if (isAnimating) return;
   if ((e.key === 'ArrowDown' || e.key === 'PageDown') && current < numSections - 1) {
@@ -184,6 +202,7 @@ window.addEventListener('keydown', e => {
     goToSection(current - 1, -1); e.preventDefault();
   }
 });
+
 let touchStartY = null;
 window.addEventListener('touchstart', e => {
   if (e.touches.length) touchStartY = e.touches[0].clientY;
@@ -195,11 +214,16 @@ window.addEventListener('touchmove', e => {
   if (dY < -60 && current < numSections - 1) { goToSection(current + 1, 1);  touchStartY = null; }
   if (dY >  60 && current > 0)              { goToSection(current - 1, -1); touchStartY = null; }
 }, { passive: false });
+
 (function animateEntryFirst() {
   gsap.set(bgs[0], { scale: 1.08 });
   gsap.to(bgs[0], { scale: 1, duration: 1.5, ease: 'power2.out' });
-  gsap.fromTo(banners[0], { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power2.out' });
+  gsap.fromTo(banners[0],
+    { opacity: 0, y: 40 },
+    { opacity: 1, y: 0, duration: 1, delay: 0.3, ease: 'power2.out' }
+  );
 })();
+
 sections.forEach((section, idx) => {
   const bg     = bgs[idx];
   const banner = banners[idx];
@@ -226,6 +250,7 @@ sections.forEach((section, idx) => {
     gsap.to(banner, { x: 0, y: 0, duration: 0.5 });
   });
 });
+
 if (window.DeviceOrientationEvent) {
   window.addEventListener('deviceorientation', e => {
     if (isAnimating) return;
