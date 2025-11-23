@@ -169,24 +169,25 @@ function goToSection(idx, dir) {
     }
   });
 
-  // --- STARY TEKST (ZNIKA) ---
-  gsap.to(banners[fromIdx], { 
-    opacity: 0, 
-    y: dir > 0 ? 100 : -100, 
-    duration: 0.6, 
-    ease: 'power2.in' 
-  });
-  
-  // --- NOWY TEKST (WJEŻDŻA Z DOŁU) ---
-  gsap.fromTo(banners[idx], { 
-    opacity: 0, 
-    y: 100 
-  }, { 
-    opacity: 1, 
-    y: 0, 
-    duration: 0.8, 
-    ease: 'power2.out' 
-  });
+  // --- STARY TEKST ZAWSZE ZNIKA DO GÓRY ---
+gsap.to(banners[fromIdx], { 
+  opacity: 0, 
+  y: -100,
+  duration: 0.6, 
+  ease: 'power2.in' 
+});
+
+// --- NOWY TEKST ZAWSZE WJEŻDŻA OD DOŁU ---
+gsap.fromTo(banners[idx], { 
+  opacity: 0, 
+  y: 100 
+}, { 
+  opacity: 1, 
+  y: 0, 
+  duration: 0.8, 
+  ease: 'power2.out' 
+});
+
 }
 
 // --- OBSŁUGA ZDARZEŃ ---
