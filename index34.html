@@ -165,9 +165,9 @@ function goToSection(idx, dir) {
     ease: 'power2.inOut'
   }, 0);
 
-  // NOWE tło:
-  // scroll w dół: wjeżdża z góry (-vh -> 0)
-  // scroll w górę: wjeżdża z dołu (vh -> 0)
+  // NOWE tło – wjeżdża Z GÓRY przy scrollu w dół:
+  // scroll w dół: start -vh -> 0
+  // scroll w górę: start +vh -> 0
   tl.fromTo(bgTo,
     { y: dir > 0 ? -vh : vh },
     { y: 0, duration: 1.6, ease: 'power2.inOut' },
