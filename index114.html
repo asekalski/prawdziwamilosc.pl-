@@ -190,8 +190,8 @@
 
   <!-- PRZYCISKI NAWIGACYJNE -->
   <div class="nav-buttons">
-    <button class="nav-btn btn-join">Dołącz za free</button>
-    <button class="nav-btn btn-login">Zaloguj</button>
+    <a href="https://prawdziwamilosc.pl/register-ONE" class="nav-btn btn-join">Dołącz za free</a>
+    <a href="https://prawdziwamilosc.pl/login" class="nav-btn btn-login">Zaloguj</a>
   </div>
 
   <div id="bgContainer">
@@ -204,7 +204,7 @@
   <div id="textContainer">
     <div class="text-slide"><div class="banner">Prawdziwa Miłość</div></div>
     <div class="text-slide"><div class="banner">Zaczyna się od właściwej Intencji</div></div>
-    <div class="text-slide"><div class="banner">Dołącz do ludzi otwortych na Prawdziwą Miłość</div></div>
+    <div class="text-slide"><div class="banner">Dołącz do ludzi otwartych na Prawdziwą Miłość</div></div>
     <div class="text-slide"><div class="banner">Znajdź Relację, o której Marzysz. </div></div>
     
     <!-- Scroll Indicator (wspólny dla wszystkich slajdów) -->
@@ -369,19 +369,6 @@ window.addEventListener('mouseleave', () => {
   const banner = textSlides[current].querySelector('.banner');
   gsap.to(bgImg, { x: 0, duration: 1 });
   gsap.to(banner, { x: 0, duration: 1 });
-});
-
-// --- OBSŁUGA PRZYCISKÓW ---
-document.querySelector('.btn-join').addEventListener('click', () => {
-  // Tutaj możesz dodać link do rejestracji
-  console.log('Przejście do rejestracji');
-  // window.location.href = 'register.html';
-});
-
-document.querySelector('.btn-login').addEventListener('click', () => {
-  // Tutaj możesz dodać link do logowania
-  console.log('Przejście do logowania');
-  // window.location.href = 'login.html';
 });
 </script>
 </body>
